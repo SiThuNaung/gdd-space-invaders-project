@@ -61,7 +61,6 @@ public class Boss extends Enemy {
             new Rectangle(84, 504, 84, 84)    // Frame 32
     };
 
-
     private int currentFrameIndex = 0;
     private int animationCounter = 0;
     private final int ANIMATION_DELAY = 6;
@@ -77,6 +76,13 @@ public class Boss extends Enemy {
     private boolean firstWaveSpawned = false; // Track if first wave has been spawned
 
     private Player player;
+    
+    // Boss health and explosion system
+    private int hitCount = 0;
+    private final int MAX_HITS = 30;
+    private BossExplosion explosion = null;
+    private boolean isExploding = false;
+    private boolean isDead = false;
 
     public Boss(int x, int y, Player player) {
         super(x, y);
@@ -94,6 +100,23 @@ public class Boss extends Enemy {
 
     @Override
     public void act() {
+        // If boss is dead, don't do anything
+        if (isDead) return;
+        
+        // Handle explosion animation
+        if (isExploding) {
+            if (explosion != null) {
+                explosion.update();
+                if (explosion.isAnimationComplete()) {
+                    isDead = true;
+                    this.visible = false; // Hide the boss sprite
+                    System.out.println("Boss defeated!");
+                }
+            }
+            return; // Don't do normal boss behavior during explosion
+        }
+
+        // Normal boss behavior
         // Animate the boss
         animationCounter++;
         if (animationCounter >= ANIMATION_DELAY) {
@@ -134,6 +157,24 @@ public class Boss extends Enemy {
             }
         }
     }
+    
+    // Method to handle boss getting hit
+    public void takeDamage() {
+        if (isExploding || isDead) return;
+        
+        hitCount++;
+        System.out.println("Boss hit! " + hitCount + "/" + MAX_HITS);
+        
+        if (hitCount >= MAX_HITS) {
+            startExplosion();
+        }
+    }
+    
+    private void startExplosion() {
+        isExploding = true;
+        explosion = new BossExplosion(this.x, this.y);
+        System.out.println("Boss explosion started!");
+    }
 
     public List<BabyBoss> getBabyBosses() {
         return babyBosses;
@@ -167,6 +208,12 @@ public class Boss extends Enemy {
 
     @Override
     public Image getImage() {
+        // If exploding, return explosion image
+        if (isExploding && explosion != null) {
+            return explosion.getImage();
+        }
+        
+        // Normal boss image
         if (image == null || currentFrame == null) return null;
 
         BufferedImage bImage = toBufferedImage(image);
@@ -184,11 +231,17 @@ public class Boss extends Enemy {
 
     @Override
     public int getWidth() {
+        if (isExploding && explosion != null) {
+            return explosion.getWidth();
+        }
         return currentFrame != null ? (int)(currentFrame.width * SCALE) : super.getWidth();
     }
 
     @Override
     public int getHeight() {
+        if (isExploding && explosion != null) {
+            return explosion.getHeight();
+        }
         return currentFrame != null ? (int)(currentFrame.height * SCALE) : super.getHeight();
     }
 
@@ -225,6 +278,15 @@ public class Boss extends Enemy {
         if (!firstWaveSpawned) return 0; // First wave spawns immediately
         return Math.max(0, WAVE_INTERVAL - waveCooldown);
     }
+    
+    // Getters for boss state
+    public int getHitCount() { return hitCount; }
+    public int getMaxHits() { return MAX_HITS; }
+    public boolean isExploding() { return isExploding; }
+    public boolean isDead() { return isDead; }
+    public float getHealthPercentage() { 
+        return (float)(MAX_HITS - hitCount) / MAX_HITS; 
+    }
 
     // Method to reset boss state (for game restart)
     public void reset() {
@@ -235,5 +297,10 @@ public class Boss extends Enemy {
         currentFrameIndex = 0;
         animationCounter = 0;
         currentFrame = bossFrames[0];
+        hitCount = 0;
+        isExploding = false;
+        isDead = false;
+        explosion = null;
+        this.visible = true;
     }
 }
