@@ -12,58 +12,58 @@ import javax.swing.ImageIcon;
 
 public class BabyBoss extends Enemy {
     // Updated rectangle coordinates for the boss sprite sheet (395 × 632)
-    private final Rectangle[] frames = new Rectangle[]{
+    private final Rectangle[] frames = new Rectangle[] {
             // Row 1
-            new Rectangle(0, 0, 79, 79),      // Frame 1
-            new Rectangle(79, 0, 79, 79),     // Frame 2
-            new Rectangle(158, 0, 79, 79),    // Frame 3
-            new Rectangle(237, 0, 79, 79),    // Frame 4
-            new Rectangle(316, 0, 79, 79),    // Frame 5
+            new Rectangle(0, 0, 79, 79), // Frame 1
+            new Rectangle(79, 0, 79, 79), // Frame 2
+            new Rectangle(158, 0, 79, 79), // Frame 3
+            new Rectangle(237, 0, 79, 79), // Frame 4
+            new Rectangle(316, 0, 79, 79), // Frame 5
 
             // Row 2
-            new Rectangle(0, 79, 79, 79),     // Frame 6
-            new Rectangle(79, 79, 79, 79),    // Frame 7
-            new Rectangle(158, 79, 79, 79),   // Frame 8
-            new Rectangle(237, 79, 79, 79),   // Frame 9
-            new Rectangle(316, 79, 79, 79),   // Frame 10
+            new Rectangle(0, 79, 79, 79), // Frame 6
+            new Rectangle(79, 79, 79, 79), // Frame 7
+            new Rectangle(158, 79, 79, 79), // Frame 8
+            new Rectangle(237, 79, 79, 79), // Frame 9
+            new Rectangle(316, 79, 79, 79), // Frame 10
 
             // Row 3
-            new Rectangle(0, 158, 79, 79),    // Frame 11
-            new Rectangle(79, 158, 79, 79),   // Frame 12
-            new Rectangle(158, 158, 79, 79),  // Frame 13
-            new Rectangle(237, 158, 79, 79),  // Frame 14
-            new Rectangle(316, 158, 79, 79),  // Frame 15
+            new Rectangle(0, 158, 79, 79), // Frame 11
+            new Rectangle(79, 158, 79, 79), // Frame 12
+            new Rectangle(158, 158, 79, 79), // Frame 13
+            new Rectangle(237, 158, 79, 79), // Frame 14
+            new Rectangle(316, 158, 79, 79), // Frame 15
 
             // Row 4
-            new Rectangle(0, 237, 79, 79),    // Frame 16
-            new Rectangle(79, 237, 79, 79),   // Frame 17
-            new Rectangle(158, 237, 79, 79),  // Frame 18
-            new Rectangle(237, 237, 79, 79),  // Frame 19
-            new Rectangle(316, 237, 79, 79),  // Frame 20
+            new Rectangle(0, 237, 79, 79), // Frame 16
+            new Rectangle(79, 237, 79, 79), // Frame 17
+            new Rectangle(158, 237, 79, 79), // Frame 18
+            new Rectangle(237, 237, 79, 79), // Frame 19
+            new Rectangle(316, 237, 79, 79), // Frame 20
 
             // Row 5
-            new Rectangle(0, 316, 79, 79),    // Frame 21
-            new Rectangle(79, 316, 79, 79),   // Frame 22
-            new Rectangle(158, 316, 79, 79),  // Frame 23
-            new Rectangle(237, 316, 79, 79),  // Frame 24
-            new Rectangle(316, 316, 79, 79),  // Frame 25
+            new Rectangle(0, 316, 79, 79), // Frame 21
+            new Rectangle(79, 316, 79, 79), // Frame 22
+            new Rectangle(158, 316, 79, 79), // Frame 23
+            new Rectangle(237, 316, 79, 79), // Frame 24
+            new Rectangle(316, 316, 79, 79), // Frame 25
 
             // Row 6
-            new Rectangle(0, 395, 79, 79),    // Frame 26
-            new Rectangle(79, 395, 79, 79),   // Frame 27
-            new Rectangle(158, 395, 79, 79),  // Frame 28
-            new Rectangle(237, 395, 79, 79),  // Frame 29
-            new Rectangle(316, 395, 79, 79),  // Frame 30
+            new Rectangle(0, 395, 79, 79), // Frame 26
+            new Rectangle(79, 395, 79, 79), // Frame 27
+            new Rectangle(158, 395, 79, 79), // Frame 28
+            new Rectangle(237, 395, 79, 79), // Frame 29
+            new Rectangle(316, 395, 79, 79), // Frame 30
 
             // Row 7
-            new Rectangle(0, 474, 79, 79),    // Frame 31
-            new Rectangle(79, 474, 79, 79),   // Frame 32
-            new Rectangle(158, 474, 79, 79),  // Frame 33
-            new Rectangle(237, 474, 79, 79),  // Frame 34
-            new Rectangle(316, 474, 79, 79),  // Frame 35
+            new Rectangle(0, 474, 79, 79), // Frame 31
+            new Rectangle(79, 474, 79, 79), // Frame 32
+            new Rectangle(158, 474, 79, 79), // Frame 33
+            new Rectangle(237, 474, 79, 79), // Frame 34
+            new Rectangle(316, 474, 79, 79), // Frame 35
 
             // Row 8 (single frame)
-            new Rectangle(0, 553, 79, 79)     // Frame 36
+            new Rectangle(0, 553, 79, 79) // Frame 36
     };
 
     private int currentFrameIndex = 0;
@@ -78,7 +78,7 @@ public class BabyBoss extends Enemy {
     // Animation states - adjusted for the new sprite sheet
     private boolean isMoving = false;
     private int idleFrameStart = 0;
-    private int idleFrameEnd = 9;    // Use first 10 frames for idle
+    private int idleFrameEnd = 9; // Use first 10 frames for idle
     private int moveFrameStart = 10;
     private int moveFrameEnd = frames.length - 1; // Use remaining frames for movement
 
@@ -140,32 +140,89 @@ public class BabyBoss extends Enemy {
         }
     }
 
+    // Replace the explosion-related code in your BabyBoss.java class
+
+    private BabyBossExplosion explosion = null;
+    private boolean exploding = false;
+    private boolean showingExplosion = false;
+
+    public void destroy() {
+        if (!exploding) {
+            System.out.println("=== DESTROY CALLED ===");
+            exploding = true;
+            showingExplosion = true;
+
+            // Store the position before hiding
+            int explosionX = this.x;
+            int explosionY = this.y;
+
+            // Hide the baby boss sprite immediately
+           // setVisible(false);
+            System.out.println("Baby boss hidden at position: " + explosionX + ", " + explosionY);
+
+            // Create explosion at the exact position where baby boss was
+            explosion = new BabyBossExplosion(explosionX, explosionY);
+            System.out.println(
+                    "Explosion created and should be visible: " + (explosion != null && explosion.isVisible()));
+        }
+    }
+
+    public boolean isExploding() {
+        boolean result = showingExplosion && explosion != null && explosion.isVisible();
+        if (showingExplosion) {
+            System.out.println("isExploding check: showingExplosion=" + showingExplosion +
+                    ", explosion!=null=" + (explosion != null) +
+                    ", explosion.isVisible()=" + (explosion != null ? explosion.isVisible() : "null"));
+        }
+        return result;
+    }
+
+    public boolean isDestroyed() {
+        return exploding && !showingExplosion;
+    }
+
+    public BabyBossExplosion getExplosion() {
+        return explosion;
+    }
+
     @Override
     public void act() {
-        // Update angle to player every few frames for better tracking
-        if (Math.random() < 0.1) { // 10% chance per frame to recalculate
-            updateAngleToPlayer();
+        if (exploding && explosion != null) {
+            explosion.act(); // Update explosion animation
+            if (explosion.isFinished()) {
+                showingExplosion = false; // Stop showing explosion
+                System.out.println("BabyBoss explosion animation finished");
+                setVisible(false); // Hide the baby boss after explosion
+            }
+        } else if (!exploding) {
+            // Normal movement and animation code (your existing code)
+            if (Math.random() < 0.1) {
+                updateAngleToPlayer();
+            }
+
+            if (isMoving) {
+                this.x += (int) (Math.cos(angleToPlayer) * speed);
+                this.y += (int) (Math.sin(angleToPlayer) * speed);
+            }
+
+            // Keep baby boss on screen bounds
+            if (this.x < 0)
+                this.x = 0;
+            if (this.x > BOARD_WIDTH - getWidth())
+                this.x = BOARD_WIDTH - getWidth();
+            if (this.y < 0)
+                this.y = 0;
+            if (this.y > BOARD_HEIGHT - getHeight())
+                this.y = BOARD_HEIGHT - getHeight();
+
+            updateAnimation();
         }
-
-        // Move towards player only if moving
-        if (isMoving) {
-            this.x += (int)(Math.cos(angleToPlayer) * speed);
-            this.y += (int)(Math.sin(angleToPlayer) * speed);
-        }
-
-        // Keep baby boss on screen bounds
-        if (this.x < 0) this.x = 0;
-        if (this.x > BOARD_WIDTH - getWidth()) this.x = BOARD_WIDTH - getWidth();
-        if (this.y < 0) this.y = 0;
-        if (this.y > BOARD_HEIGHT - getHeight()) this.y = BOARD_HEIGHT - getHeight();
-
-        // Update animation frame
-        updateAnimation();
     }
 
     @Override
     public Image getImage() {
-        if (image == null) return null;
+        if (image == null)
+            return null;
 
         BufferedImage bImage = toBufferedImage(image);
         Rectangle r = frames[currentFrameIndex];
@@ -179,20 +236,20 @@ public class BabyBoss extends Enemy {
         }
 
         // Scale the sprite
-        int scaledWidth = (int)(r.width * SCALE);
-        int scaledHeight = (int)(r.height * SCALE);
+        int scaledWidth = (int) (r.width * SCALE);
+        int scaledHeight = (int) (r.height * SCALE);
 
         return sub.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
     }
 
     @Override
     public int getWidth() {
-        return (int)(frames[currentFrameIndex].width * SCALE);
+        return (int) (frames[currentFrameIndex].width * SCALE);
     }
 
     @Override
     public int getHeight() {
-        return (int)(frames[currentFrameIndex].height * SCALE);
+        return (int) (frames[currentFrameIndex].height * SCALE);
     }
 
     @Override

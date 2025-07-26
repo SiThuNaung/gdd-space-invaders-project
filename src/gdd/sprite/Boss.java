@@ -73,7 +73,7 @@ public class Boss extends Enemy {
     private int waveCooldown = 0;
     private int waveCount = 0;
     private final int MAX_WAVES = 5;
-    private final int WAVE_INTERVAL = 150; // ~10s at 30fps (30 * 10 = 300)
+    private final int WAVE_INTERVAL = 300; // ~10s at 30fps (30 * 10 = 300)
     private boolean firstWaveSpawned = false; // Track if first wave has been spawned
 
     private Player player;

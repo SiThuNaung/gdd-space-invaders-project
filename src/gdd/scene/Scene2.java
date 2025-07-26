@@ -3,6 +3,7 @@ package gdd.scene;
 import gdd.sprite.Player;
 import gdd.sprite.Boss;
 import gdd.sprite.BabyBoss;
+import gdd.sprite.BabyBossExplosion;
 import gdd.sprite.Shot;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ public class Scene2 extends JPanel implements ActionListener {
         setDoubleBuffered(true);
 
         player = new Player();
-        boss = new Boss((BOARD_WIDTH - 150) / 2, 60, player);  // Centered
+        boss = new Boss((BOARD_WIDTH - 150) / 2, 60, player); // Centered
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -74,9 +75,31 @@ public class Scene2 extends JPanel implements ActionListener {
             }
 
             // Draw baby bosses
-            for (BabyBoss bb : boss.getBabyBosses()) {
-                if (bb.isVisible()) {
-                    g.drawImage(bb.getImage(), bb.getX(), bb.getY(), this);
+            for (int i = 0; i < boss.getBabyBosses().size(); i++) {
+                BabyBoss bb = boss.getBabyBosses().get(i);
+
+                // Draw normal baby boss if visible and not exploding
+                if (bb.isVisible() && !bb.isExploding()) {
+                    Image bbImage = bb.getImage();
+                    if (bbImage != null) {
+                        g.drawImage(bbImage, bb.getX(), bb.getY(), this);
+                    }
+                }
+            }
+
+            // Draw explosions separately
+            for (int i = 0; i < boss.getBabyBosses().size(); i++) {
+                BabyBoss bb = boss.getBabyBosses().get(i);
+
+                // Draw explosion if present
+                if (bb.isExploding() && bb.getExplosion() != null) {
+                    BabyBossExplosion explosion = bb.getExplosion();
+                    if (explosion.isVisible()) {
+                        Image explosionImage = explosion.getImage();
+                        if (explosionImage != null) {
+                            g.drawImage(explosionImage, explosion.getX(), explosion.getY(), this);
+                        }
+                    }
                 }
             }
 
@@ -150,7 +173,8 @@ public class Scene2 extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (gameOver) return;
+        if (gameOver)
+            return;
 
         frame++;
 
@@ -178,16 +202,28 @@ public class Scene2 extends JPanel implements ActionListener {
             }
         }
 
+        // Collision with boss
+        if (boss.isVisible() && player.isVisible()) {
+            if (boss.getBounds().intersects(player.getBounds())) {
+                player.setVisible(false);
+                gameOver = true;
+                System.out.println("Player hit by boss! Game Over!");
+            }
+        }
+
         // Handle shot collisions with baby bosses
         for (Shot shot : player.getShots()) {
-            if (!shot.isVisible()) continue;
+            if (!shot.isVisible())
+                continue;
 
             for (BabyBoss bb : babies) {
-                if (bb.isVisible() && shot.getBounds().intersects(bb.getBounds())) {
-                    // Hit! Remove both shot and baby boss
+                if (bb.isVisible() && !bb.isExploding() && shot.getBounds().intersects(bb.getBounds())) {
+                    // Hit! Remove shot and start explosion
                     shot.setVisible(false);
-                    bb.setVisible(false);
-                    System.out.println("Baby boss destroyed by shot!");
+                    System.out.println("=== COLLISION DETECTED ===");
+                    System.out.println("Shot hit baby boss at: " + bb.getX() + ", " + bb.getY());
+                    bb.destroy(); // This will start the explosion animation
+                    System.out.println("Baby boss destroy() called - should be exploding now: " + bb.isExploding());
                     break; // Exit inner loop since shot is destroyed
                 }
             }
@@ -239,7 +275,8 @@ public class Scene2 extends JPanel implements ActionListener {
             int mapRow = (baseRow + screenRow) % MAP.length;
             int y = BOARD_HEIGHT - ((screenRow * BLOCKHEIGHT) - scrollOffset);
 
-            if (y > BOARD_HEIGHT || y < -BLOCKHEIGHT) continue;
+            if (y > BOARD_HEIGHT || y < -BLOCKHEIGHT)
+                continue;
 
             for (int col = 0; col < MAP[mapRow].length; col++) {
                 if (MAP[mapRow][col] == 1) {

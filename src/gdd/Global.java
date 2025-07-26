@@ -45,4 +45,5 @@ public class Global {
     public static final String IMG_FLYING_ALIEN_EXPLOSION = "src/images/flying_alien_explosion.png";
     public static final String IMG_BOSS = "src/images/boss_3.png";
     public static final String IMG_BABY_BOSS = "src/images/boss_2.png";
+    public static final String IMG_BABY_BOSS_EXPLOSION = "src/images/baby_boss_explosion.png";
 }
