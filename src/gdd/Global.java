@@ -74,4 +74,11 @@ public class Global {
     public static final String WARP_SOUND = "src/audio/warp_sound.wav";
     public static final String PLAYER_HIT_SOUND = "src/audio/player_hit_sound.wav";
     public static final String SHIELD_GUARD_SOUND = "src/audio/shield_guard_sound.wav";
+
+    public static final String BOSS_SCREAM_SOUND = "src/audio/boss_scream.wav";
+    public static final String WINNING_SOUND = "src/audio/winning.wav";
+    public static final String LOSING_SOUND = "src/audio/gameover.wav";
+    public static final String BABY_BOSS_SOUND = "src/audio/baby_boss.wav";
+    public static final String FLYING_ALIEN_SOUND = "src/audio/flying_alien.wav";
+
 }

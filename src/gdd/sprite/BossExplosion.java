@@ -3,6 +3,9 @@ package gdd.sprite;
 import static gdd.Global.*;
 
 import javax.swing.ImageIcon;
+
+import gdd.AudioPlayer;
+
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -44,8 +47,19 @@ public class BossExplosion {
     private final double SCALE = 3.0;
     private boolean animationComplete = false;
     private boolean visible = true;
+    private AudioPlayer audioPlayer;
+
+    private void initAudio() {
+        try {
+            audioPlayer = new AudioPlayer();
+            audioPlayer.playBossScream();
+        } catch (Exception e) {
+            System.err.println("Error initializing audio player: " + e.getMessage());
+        }
+    }
     
     public BossExplosion(int x, int y) {
+        initAudio();
         this.x = x;
         this.y = y;
         this.image = new ImageIcon(IMG_BOSS_EXPLOSION).getImage(); // You'll need to define this in Global

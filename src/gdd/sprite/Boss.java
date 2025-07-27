@@ -61,7 +61,7 @@ public class Boss extends Enemy {
             new Rectangle(0, 504, 84, 84),    // Frame 31
             new Rectangle(84, 504, 84, 84)    // Frame 32
     };
-
+    
     private int currentFrameIndex = 0;
     private int animationCounter = 0;
     private final int ANIMATION_DELAY = 6;
@@ -99,7 +99,7 @@ public class Boss extends Enemy {
         setImage(new ImageIcon(IMG_BOSS).getImage());
         currentFrame = bossFrames[0];
     }
-
+    
     @Override
     public void act() {
         // If boss is dead, don't do anything
