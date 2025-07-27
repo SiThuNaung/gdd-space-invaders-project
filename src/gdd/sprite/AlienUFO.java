@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 
 public class AlienUFO extends Enemy {
 
-    private List<Bomb> bombs = new ArrayList<>();
+//    private List<Bomb> bombs = new ArrayList<>();
     private int bombCooldown = 0;
 
     private int animationCounter = 0;
@@ -105,10 +105,10 @@ public class AlienUFO extends Enemy {
         this.y++;
         act();
         // Bomb dropping logic
-        tickCooldown();
-        if (canDropBomb() && Math.random() < 0.02) { // 2% chance per frame
-            dropBomb();
-        }
+//        tickCooldown();
+//        if (canDropBomb() && Math.random() < 0.02) { // 2% chance per frame
+//            dropBomb();
+//        }
     }
 
     @Override
