@@ -25,10 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -899,7 +896,7 @@ public class Scene1 extends JPanel {
         x = (BOARD_WIDTH - fm.stringWidth(restartText)) / 2;
         y = y + 60;
         g.drawString(restartText, x, y);
-        g.drawString("Score: " + score, x + 55, y + 90);
+        g.drawString("High Score: " + loadScore(), x + 55, y + 90);
     }
 
     private void drawGameOver(Graphics g) {
@@ -919,7 +916,7 @@ public class Scene1 extends JPanel {
         y = y + 60;
         g.drawString(restartText, x, y);
 //        g.drawString("Press ESC to Exit", x, y + 90);
-        g.drawString("Score: " + score, x + 55, y + 90);
+        g.drawString("High Score: " + loadScore(), x + 55, y + 90);
     }
 
     private void resetGame() {
@@ -1243,7 +1240,13 @@ public class Scene1 extends JPanel {
     }
 
     public int loadScore() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("score.json"))) {
+        File file = new File("score.json");
+        if (!file.exists()) {
+            System.out.println("score.json not found.");
+            return 0;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             if (line != null) {
                 // very simple manual parsing
@@ -1253,9 +1256,8 @@ public class Scene1 extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return 0; // default if file not found or error
+        return 0;
     }
-
 
     private class GameCycle implements ActionListener {
 

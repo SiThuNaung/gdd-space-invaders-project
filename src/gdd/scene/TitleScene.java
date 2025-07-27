@@ -3,11 +3,8 @@ package gdd.scene;
 import gdd.AudioPlayer;
 import gdd.Game;
 import static gdd.Global.*;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -112,6 +109,10 @@ public class TitleScene extends JPanel {
         g.setColor(Color.gray);
         g.setFont(g.getFont().deriveFont(10f));
         g.drawString("Game by Chayapol, Min Thant, Thant Zin Min, Si Thu Naung", 10, 650);
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.drawString("High Score: " + game.getScene1().loadScore(), 10, 620);
 
         Toolkit.getDefaultToolkit().sync();
     }
