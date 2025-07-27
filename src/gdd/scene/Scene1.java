@@ -141,16 +141,16 @@ public class Scene1 extends JPanel {
         } catch (IOException e) {
             System.err.println("Error loading spawn data from CSV: " + e.getMessage());
         }
-        spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
-        spawnMap.put(200, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
-        spawnMap.put(300, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-        spawnMap.put(400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-        spawnMap.put(800, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-        spawnMap.put(900, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-        spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-        spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-        spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
-        spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
+        // spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
+        // spawnMap.put(200, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        // spawnMap.put(300, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        // spawnMap.put(400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+        // spawnMap.put(800, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        // spawnMap.put(900, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+        // spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        // spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+        // spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
+        // spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
     }
 
     // function to spawn anything from spawn map
@@ -669,7 +669,14 @@ public class Scene1 extends JPanel {
                             && shotX <= (enemyX + enemyWidth)
                             && shotY >= (enemyY)
                             && shotY <= (enemyY + enemyHeight)) {
-                        score += 5;
+                        if(boss!=null&&!(boss.isExploding())){
+                            score += 5;
+                        }
+                        if (boss==null){
+                            score += 5;
+
+                        }
+                        //score += 5;
                         if((enemy instanceof FlyingAlien)){
                             audioPlayer.playFlyingAlienExplosion();
                         }
@@ -683,6 +690,14 @@ public class Scene1 extends JPanel {
                         if (!(enemy instanceof Boss)) {
                             explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getType()));
                         }
+                        if(boss!=null && !(boss.isExploding())) {
+                            if(enemy instanceof Boss){
+                                boss.takeDamage();
+                            }
+                            
+                            
+                        }
+                        
                         deaths++;
                         enemy.setDying(true);
                         shot.die();
@@ -706,7 +721,7 @@ public class Scene1 extends JPanel {
         }
 
         // System.out.println("Shots to remove: " + shotsToRemove);
-        shots.removeAll(shotsToRemove);
+        //shots.removeAll(shotsToRemove);
         // enemies
         // for (Enemy enemy : enemies) {
         // int x = enemy.getX();
@@ -830,22 +845,24 @@ public class Scene1 extends JPanel {
                 }
 
                 // Handle shot collisions (only if boss not exploding)
-                for (Shot shot : player.getShots()) {
+                for (Shot shot : shots) {
                     if (!shot.isVisible())
                         continue;
 
                     // Check bullet-boss collisions
-                    if (shot.getBounds().intersects(boss.getBounds()) && !boss.isDead()) {
-                        boss.takeDamage();
-                        shot.setVisible(false); // Remove the bullet
-                    }
+                    // if (shot.getBounds().intersects(boss.getBounds()) && !boss.isDead()) {
+                    //     boss.takeDamage();
+                    //     shot.setVisible(false); // Remove the bullet
+                    // }
 
                     // Check bullet-baby boss collisions
                     for (BabyBoss bb : babies) {
                         if (bb.isVisible() && !bb.isExploding() && shot.getBounds().intersects(bb.getBounds())) {
                             // Hit! Remove shot and start explosion
                             audioPlayer.playBabyBossExplosion();
+                            shotsToRemove.add(shot);
                             shot.setVisible(false);
+
                             System.out.println("=== COLLISION DETECTED ===");
                             System.out.println("Shot hit baby boss at: " + bb.getX() + ", " + bb.getY());
                             bb.destroy(); // This will start the explosion animation
@@ -857,6 +874,7 @@ public class Scene1 extends JPanel {
                 }
             }
         }
+        shots.removeAll(shotsToRemove);
     }
 
     private void handleCollision(int playerX, int playerY) {

@@ -43,7 +43,7 @@ public class BossExplosion {
     private Image image;
     private int currentFrameIndex = 0;
     private int animationCounter = 0;
-    private final int ANIMATION_DELAY = 4; // Faster animation for explosion
+    private final int ANIMATION_DELAY = 3; // Faster animation for explosion
     private final double SCALE = 3.0;
     private boolean animationComplete = false;
     private boolean visible = true;
