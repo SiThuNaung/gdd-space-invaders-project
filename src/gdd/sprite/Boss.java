@@ -64,7 +64,7 @@ public class Boss extends Enemy {
     private int currentFrameIndex = 0;
     private int animationCounter = 0;
     private final int ANIMATION_DELAY = 6;
-    private final double SCALE = 3;
+    private final double SCALE = 2;
 
     private Rectangle currentFrame;
 
@@ -72,6 +72,7 @@ public class Boss extends Enemy {
     private int waveCooldown = 0;
     private int waveCount = 0;
     private final int MAX_WAVES = 5;
+    private final int FIRST_WAVE_DELAY = 150;
     private final int WAVE_INTERVAL = 300; // ~10s at 30fps (30 * 10 = 300)
     private boolean firstWaveSpawned = false; // Track if first wave has been spawned
 
@@ -126,16 +127,19 @@ public class Boss extends Enemy {
         }
 
         // Handle baby boss waves
+        // Handle baby boss waves
         if (waveCount < MAX_WAVES) {
-            // Spawn first wave immediately
             if (!firstWaveSpawned) {
-                spawnBabyBosses();
-                firstWaveSpawned = true;
-                waveCount++;
-                waveCooldown = 0; // Reset cooldown for next wave
-                System.out.println("Wave " + waveCount + " spawned immediately! (" + babyBosses.size() + " baby bosses)");
+                waveCooldown++;
+                if (waveCooldown >= FIRST_WAVE_DELAY) { // Add this constant
+                    spawnBabyBosses();
+                    firstWaveSpawned = true;
+                    waveCount++;
+                    waveCooldown = 0;
+                    System.out.println("Wave " + waveCount + " spawned after delay! (" + babyBosses.size() + " baby bosses)");
+                }
             } else {
-                // For subsequent waves, wait for the interval
+                // Subsequent waves logic remains the same
                 waveCooldown++;
                 if (waveCooldown >= WAVE_INTERVAL) {
                     spawnBabyBosses();

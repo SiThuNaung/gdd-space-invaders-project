@@ -72,7 +72,7 @@ public class BabyBoss extends Enemy {
     private final double SCALE = 1.0; // Scale factor for baby boss (smaller than main boss)
 
     private double angleToPlayer;
-    private double speed = 2;
+    private double speed = 1.8;
     private Player targetPlayer;
 
     // Animation states - adjusted for the new sprite sheet
