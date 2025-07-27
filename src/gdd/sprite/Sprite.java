@@ -14,6 +14,7 @@ abstract public class Sprite {
     protected int x;
     protected int y;
     protected int dx;
+    protected int dy;
 
     public Sprite() {
         visible = true;
@@ -47,7 +48,7 @@ abstract public class Sprite {
         }
     }
 
-    protected void setVisible(boolean visible) {
+    public void setVisible(boolean visible) {
         this.visible = visible;
     }
 

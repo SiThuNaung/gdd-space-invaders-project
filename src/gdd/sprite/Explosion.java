@@ -14,14 +14,24 @@ public class Explosion extends Sprite {
 
     private int animationCounter = 0;
     private int currentFrameIndex = 0;
-    private final int ANIMATION_DELAY = 2;
+    private final int ANIMATION_DELAY = 3;
     private Rectangle currentFrame;
 
     // private static final String ACT_FLYING = "FLYING";
     private static final String ACT_EXPLOSION = "EXPLOSION";
     private String action = ACT_EXPLOSION;
 
-    private final Rectangle[] explosionFrames = new Rectangle[] {
+    private  Rectangle[] FlyingAlienExplosionFrames = new Rectangle[] {
+        new Rectangle(382, 90, 53, 36),
+        new Rectangle(321, 91, 52, 36),
+        new Rectangle(262, 93, 49, 33),
+        new Rectangle(211, 95, 34, 30),
+        new Rectangle(150, 95, 27, 30),
+        new Rectangle(90, 95, 24, 27),
+        new Rectangle(31, 95, 20, 25)
+};
+
+    private  Rectangle[] explosionFrames = new Rectangle[] {
             new Rectangle(388, 173, 31, 24),
             new Rectangle(328, 173, 31, 24),
             new Rectangle(269, 172, 30, 25),
@@ -41,29 +51,35 @@ public class Explosion extends Sprite {
         return currentFrame != null ? currentFrame.height : super.getHeight();
     }
 
-    public Explosion(int x, int y) {
-
-        initExplosion(x, y);
+    public Explosion(int x, int y, String type) {
+        initExplosion(x, y, type);
     }
+    
+    private Rectangle[] currentFrameSet;
 
-    private void initExplosion(int x, int y) {
-
+    private void initExplosion(int x, int y, String type) {
         this.x = x;
         this.y = y;
-        ImageIcon ii = new ImageIcon(IMG_ALIEN_UFO);
-        setImage(ii.getImage());
-        currentFrame = explosionFrames[0];
-        // act();
-
-        // var ii = new ImageIcon(IMG_EXPLOSION);
-
-        // // Scale the image to use the global scaling factor
-        // var scaledImage = ii.getImage().getScaledInstance(ii.getIconWidth() *
-        // SCALE_FACTOR,
-        // ii.getIconHeight() * SCALE_FACTOR,
-        // java.awt.Image.SCALE_SMOOTH);
-        // setImage(scaledImage);
+    
+        // Select correct explosion sprite
+        switch (type) {
+            case "FlyingAlien":
+                setImage(new ImageIcon(IMG_FLYING_ALIEN_EXPLOSION).getImage());
+                currentFrameSet = FlyingAlienExplosionFrames;
+                //explosionFrames = FlyingAlienExplosionFrames;
+                break;
+    
+            case "AlienUFO":
+            default:
+                setImage(new ImageIcon(IMG_ALIEN_UFO).getImage());
+                currentFrameSet = explosionFrames;
+                //explosionFrames = explosionFrames;
+                break;
+        }
+        currentFrameIndex = 0;
+        currentFrame = currentFrameSet[0];
     }
+    
 
     @Override
     public Image getImage() {
@@ -103,14 +119,12 @@ public class Explosion extends Sprite {
         animationCounter++;
         if (animationCounter % ANIMATION_DELAY == 0) {
             currentFrameIndex++;
-            if (currentFrameIndex >= explosionFrames.length) {
+            if (currentFrameSet == null || currentFrameIndex >= currentFrameSet.length) {
                 setVisible(false);
-
-                currentFrame = null; // Avoid drawing invalid frames
+                currentFrame = null;
             } else {
-                currentFrame = explosionFrames[currentFrameIndex];
+                currentFrame = currentFrameSet[currentFrameIndex];
             }
         }
-
     }
 }

@@ -7,6 +7,6 @@ public class Main {
         EventQueue.invokeLater(() -> {
             var game = new Game();
             game.setVisible(true);
-        });
+        }); 
     }
 }

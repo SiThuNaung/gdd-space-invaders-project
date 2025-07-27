@@ -11,6 +11,16 @@ import gdd.sprite.Explosion;
 import gdd.sprite.Player;
 import gdd.sprite.Shot;
 import java.awt.*;
+import gdd.SpawnDetails;
+import gdd.powerup.PowerUp;
+import gdd.powerup.SpeedUp;
+import gdd.sprite.*;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -20,6 +30,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -33,6 +45,8 @@ public class Scene1 extends JPanel {
     private List<Shot> shots;
     private Player player;
     // private Shot shot;
+
+    private PlayerExplosion playerExplosion;
 
     final int BLOCKHEIGHT = 50;
     final int BLOCKWIDTH = 50;
@@ -151,7 +165,7 @@ public class Scene1 extends JPanel {
                         System.out.println("Entity Spawned at frame: " + frame);
                         break;
                     // Add more cases for different enemy types if needed
-                    case ALIEN:
+                    case FLYING_ALIEN:
                         // Enemy enemy2 = new Alien2(sd.x, sd.y);
                         // enemies.add(enemy2);
                         break;
@@ -409,7 +423,9 @@ public class Scene1 extends JPanel {
         if (player.isDying()) {
 
             player.die();
-            inGame = false;
+            Timer inGameTimer = new Timer(1000, e -> inGame = false);
+            inGameTimer.setRepeats(false);
+            inGameTimer.start();
         }
     }
 
@@ -424,18 +440,36 @@ public class Scene1 extends JPanel {
     }
 
     private void drawBombing(Graphics g) {
+        // for (Enemy enemy : enemies) {
+        // if (enemy instanceof AlienUFO ufo) {
+        // for (AlienUFO.Bomb bomb : ufo.getBombs()) {
+        // if (!bomb.isDestroyed()) {
+        // g.drawImage(bomb.getImage(), bomb.getX(), bomb.getY(), this);
+        // }
+        // }
+        // }
+        // }
 
-         for (Enemy e : enemies) {
-         AlienUFO.Bomb b = ((AlienUFO) e).getBomb();
-             if (!b.isDestroyed()) {
-                g.drawImage(b.getImage(), b.getX(), b.getY(), this);
-            }
-         }
+//         for (Enemy e : enemies) {
+//         AlienUFO.Bomb b = ((AlienUFO) e).getBomb();
+//             if (!b.isDestroyed()) {
+//                g.drawImage(b.getImage(), b.getX(), b.getY(), this);
+//            }
+//         }
+//        for (Enemy enemy : enemies) {
+//            for (Enemy.Bomb bomb : enemy.getBombs()) {
+//                if (enemy instanceof AlienUFO ufo) {
+//                    if (!bomb.isDestroyed()) {
+//                        g.drawImage(bomb.getImage(), bomb.getX(), bomb.getY(), this);
+//                    }
+//                }
+//            }
+//        }
     }
 
     private void drawExplosions(Graphics g) {
 
-       // List<Explosion> toRemove = new ArrayList<>();
+        // List<Explosion> toRemove = new ArrayList<>();
 
         for (Explosion explosion : explosions) {
 
@@ -444,12 +478,12 @@ public class Scene1 extends JPanel {
                 g.drawImage(explosion.getImage(), explosion.getX(), explosion.getY(), this);
                 // explosion.visibleCountDown();
                 // if (!explosion.isVisible()) {
-                //     toRemove.add(explosion);
+                // toRemove.add(explosion);
                 // }
             }
         }
 
-        //explosions.removeAll(toRemove);
+        // explosions.removeAll(toRemove);
     }
 
     @Override
@@ -485,6 +519,7 @@ public class Scene1 extends JPanel {
             drawShot(g);
             drawGameInfo(g);
             drawFadeMessage(g);
+            drawPlayerExplosion(g);
 
         } else {
 
@@ -559,6 +594,11 @@ public class Scene1 extends JPanel {
         // player
         player.act();
 
+        // player explosion
+        if (player.isDying()) {
+            playerExplosion.act();
+        }
+
         // Power-ups
         for (PowerUp powerup : powerups) {
             if (powerup.isVisible()) {
@@ -623,13 +663,9 @@ public class Scene1 extends JPanel {
                             && shotX <= (enemyX + enemyWidth)
                             && shotY >= (enemyY)
                             && shotY <= (enemyY + enemyHeight)) {
-
-                        // var ii = new ImageIcon(IMG_EXPLOSION);
-                        // enemy.setImage(ii.getImage());
-
                         score += 5;
-                        explosions.add(new Explosion(enemyX, enemyY));
                         audioPlayer.playExplosion();
+                        explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getType()));
                         deaths++;
                         enemy.setDying(true);
                         shot.die();
@@ -680,39 +716,39 @@ public class Scene1 extends JPanel {
         // bombs - collision detection
         // Bomb is with enemy, so it loops over enemies
 
-        for (Enemy enemy : enemies) {
-            int chance = randomizer.nextInt(15);
-            AlienUFO.Bomb bomb = ((AlienUFO) enemy).getBomb();
-
-            if (chance == CHANCE && enemy.isVisible() && bomb.isDestroyed()) {
-                bomb.setDestroyed(false);
-                bomb.setX(enemy.getX());
-                bomb.setY(enemy.getY());
-            }
-
-            int bombX = bomb.getX();
-            int bombY = bomb.getY();
-            int playerX = player.getX();
-            int playerY = player.getY();
-
-            if (player.isVisible() && !bomb.isDestroyed()
-                    && bombX >= (playerX)
-                    && bombX <= (playerX + PLAYER_WIDTH)
-                    && bombY >= (playerY)
-                    && bombY <= (playerY + PLAYER_HEIGHT)) {
-                var ii = new ImageIcon(IMG_EXPLOSION);
-                bomb.setDestroyed(true);
-                handleCollision(ii);
-            }
-
-            if (!bomb.isDestroyed()) {
-                // make bomb go down
-                bomb.setY(bomb.getY() + 3);
-                if (bomb.getY() >= GROUND - BOMB_HEIGHT) {
-                    bomb.setDestroyed(true);
-                }
-            }
-        }
+//        for (Enemy enemy : enemies) {
+//            int chance = randomizer.nextInt(15);
+//            Enemy.Bomb bomb = enemy.getBomb();
+//
+//            if (chance == CHANCE && enemy.isVisible() && bomb.isDestroyed()) {
+//                bomb.setDestroyed(false);
+//                bomb.setX(enemy.getX());
+//                bomb.setY(enemy.getY());
+//            }
+//
+//            int bombX = bomb.getX();
+//            int bombY = bomb.getY();
+//            int playerX = player.getX();
+//            int playerY = player.getY();
+//
+//            if (player.isVisible() && !bomb.isDestroyed()
+//                    && bombX >= (playerX)
+//                    && bombX <= (playerX + PLAYER_WIDTH)
+//                    && bombY >= (playerY)
+//                    && bombY <= (playerY + PLAYER_HEIGHT)) {
+//                var ii = new ImageIcon(IMG_EXPLOSION);
+//                bomb.setDestroyed(true);
+//                handleCollision(ii);
+//            }
+//
+//            if (!bomb.isDestroyed()) {
+//                // make bomb go down
+//                bomb.setY(bomb.getY() + 3);
+//                if (bomb.getY() >= GROUND - BOMB_HEIGHT) {
+//                    bomb.setDestroyed(true);
+//                }
+//            }
+//        }
     }
 
     private void handleCollision(ImageIcon ii) {
@@ -912,7 +948,62 @@ public class Scene1 extends JPanel {
         public boolean isVisible() {
             return y < BOARD_HEIGHT + length && alpha > 0;
         }
+        // bombs
+//        for (Enemy enemy : enemies) {
+//            if (enemy instanceof AlienUFO ufo) {
+//
+//                // Cooldown logic
+//                enemy.tickCooldown();
+//
+//                // Random chance to drop a bomb
+//                if (enemy.isVisible() && enemy.canDropBomb() && randomizer.nextInt(120) == 0) {
+//                    enemy.dropBomb();
+//                }
+//
+//                // Handle all bombs from this enemy
+//                for (Enemy.Bomb bomb : enemy.getBombs()) {
+//                    if (!bomb.isDestroyed()) {
+//
+//                        // Move bomb downward
+//                        bomb.setY(bomb.getY() + 4);
+//
+//                        // If hits the ground, destroy it
+//                        if (bomb.getY() >= GROUND - BOMB_HEIGHT) {
+//                            bomb.setDestroyed(true);
+//                        }
+//
+//                        // Collision with player
+//                        int bombX = bomb.getX();
+//                        int bombY = bomb.getY();
+//                        int playerX = player.getX();
+//                        int playerY = player.getY();
+//
+//                        if (player.isVisible()
+//                                && bombX >= playerX && bombX <= (playerX + PLAYER_WIDTH)
+//                                && bombY >= playerY && bombY <= (playerY + PLAYER_HEIGHT)) {
+//
+//                            // explosions.add(new Explosion(playerX, playerY));
+//
+//                            playerExplosion = new PlayerExplosion(playerX, playerY);
+//                            player.setDying(true);
+//                            bomb.setDestroyed(true);
+//                        }
+//                    }
+//                }
+//
+//                // Clean up destroyed bombs
+//                enemy.updateBombs();
+//            }
+//        }
+
     }
+
+    private void drawPlayerExplosion(Graphics g) {
+        if (playerExplosion != null){
+            g.drawImage(playerExplosion.getImage(), playerExplosion.getX(), playerExplosion.getY(), this);
+        }
+    }
+
 
     private void doGameCycle() {
         if (!isFading) {
@@ -969,6 +1060,7 @@ public class Scene1 extends JPanel {
 
             int x = player.getX();
             int y = player.getY();
+            int w = player.getWidth();
 
             int key = e.getKeyCode();
 
@@ -982,3 +1074,4 @@ public class Scene1 extends JPanel {
         }
     }
 }
+
