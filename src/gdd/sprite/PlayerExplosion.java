@@ -53,4 +53,12 @@ public class PlayerExplosion extends Sprite {
         Rectangle frame = explosionFrames[clipNo];
         return bImage.getSubimage(frame.x, frame.y, frame.width, frame.height);
     }
+
+    public void setClipNo(int clipNo) {
+        this.clipNo = clipNo;
+    }
+
+    public void setAnimationCounter(int animationCounter) {
+        this.animationCounter = animationCounter;
+    }
 }

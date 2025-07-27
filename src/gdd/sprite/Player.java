@@ -282,6 +282,8 @@ public class Player extends Sprite {
         return width;
     }
 
+
+
     @Override
     public Rectangle getBounds() {
         int frameHeight = height + height / 2; // Match the extended height from getImage()
@@ -300,6 +302,7 @@ public class Player extends Sprite {
         rightPressed = false;
         upPressed = false;
         downPressed = false;
+        setDying(false);
         setVisible(true);
     }
 }

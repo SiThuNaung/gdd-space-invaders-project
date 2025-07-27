@@ -1,10 +1,11 @@
 package gdd.sprite;
 
+import gdd.scene.Scene1;
+
 import static gdd.Global.*;
 
 import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
 import java.util.ArrayList;
@@ -210,6 +211,111 @@ public class Boss extends Enemy {
         }
     }
 
+    public static void drawBossStuff(Graphics g, Boss boss, Player player, Scene1 scene1) {
+        // Draw boss (including explosion animation)
+        if (boss.isVisible()) {
+            g.drawImage(boss.getImage(), boss.getX(), boss.getY(), scene1);
+        }
+
+        // Draw baby bosses (show them even when boss is exploding so we can see their
+        // explosions)
+        for (int i = 0; i < boss.getBabyBosses().size(); i++) {
+            BabyBoss bb = boss.getBabyBosses().get(i);
+
+            // Draw normal baby boss if visible and not exploding
+            if (bb.isVisible() && !bb.isExploding()) {
+                Image bbImage = bb.getImage();
+                if (bbImage != null) {
+                    g.drawImage(bbImage, bb.getX(), bb.getY(), scene1);
+                }
+            }
+        }
+
+        // Draw baby boss explosions (always show explosions)
+        for (int i = 0; i < boss.getBabyBosses().size(); i++) {
+            BabyBoss bb = boss.getBabyBosses().get(i);
+
+            // Draw explosion if present
+            if (bb.isExploding() && bb.getExplosion() != null) {
+                BabyBossExplosion explosion = bb.getExplosion();
+                if (explosion.isVisible()) {
+                    Image explosionImage = explosion.getImage();
+                    if (explosionImage != null) {
+                        g.drawImage(explosionImage, explosion.getX(), explosion.getY(), scene1);
+                    }
+                }
+            }
+        }
+
+        // Draw player shots only if boss isn't exploding
+//        if (!boss.isExploding()) {
+//            List<Shot> playerShots = player.getShots();
+//            for (Shot shot : playerShots) {
+//                if (shot.isVisible()) {
+//                    g.drawImage(shot.getImage(), shot.getX(), shot.getY(), scene1);
+//                }
+//            }
+//        }
+
+        drawBossUI(g, boss);
+    }
+
+    private static void drawBossUI(Graphics g, Boss boss) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 16));
+
+        // Wave information
+        String waveInfo = "Wave: " + boss.getCurrentWave() + "/" + boss.getMaxWaves();
+        g.drawString(waveInfo, 10, 25);
+
+        // Baby boss count
+        String babyCount = "Baby Bosses: " + boss.getBabyBosses().size();
+        g.drawString(babyCount, 10, 45);
+
+        // Boss health information
+        String healthInfo = "Boss Health: " + (boss.getMaxHits() - boss.getHitCount()) + "/" + boss.getMaxHits();
+        g.drawString(healthInfo, 10, 65);
+
+        // Boss health bar
+        int barWidth = 200;
+        int barHeight = 10;
+        int barX = 10;
+        int barY = 75;
+
+        // Background (red)
+        g.setColor(Color.RED);
+        g.fillRect(barX, barY, barWidth, barHeight);
+
+        // Health (green)
+        g.setColor(Color.GREEN);
+        int healthWidth = (int) (barWidth * boss.getHealthPercentage());
+        g.fillRect(barX, barY, healthWidth, barHeight);
+
+        // Border
+        g.setColor(Color.WHITE);
+        g.drawRect(barX, barY, barWidth, barHeight);
+
+        // Time until next wave (more accurate)
+        if (boss.getCurrentWave() < boss.getMaxWaves() && !boss.isExploding()) {
+            int timeLeft = boss.getTimeUntilNextWave() / 30; // Convert frames to seconds
+            if (boss.getCurrentWave() == 0) {
+                g.drawString("First wave spawning now!", 10, 105);
+            } else {
+                String nextWave = "Next wave in: " + timeLeft + "s";
+                g.drawString(nextWave, 10, 105);
+            }
+        } else if (boss.isExploding()) {
+            g.setColor(Color.YELLOW);
+            g.drawString("BOSS EXPLODING!", 10, 105);
+        } else {
+            g.drawString("All waves spawned!", 10, 105);
+        }
+    }
+
+    public static void updateBoss() {
+
+    }
+
     @Override
     public Image getImage() {
         // If exploding, return explosion image
@@ -292,6 +398,11 @@ public class Boss extends Enemy {
         return (float)(MAX_HITS - hitCount) / MAX_HITS; 
     }
 
+    // Add getBounds method to Player class if not present
+    public Rectangle getPlayerBounds() {
+        return new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+    }
+
     // Method to reset boss state (for game restart)
     public void reset() {
         babyBosses.clear();
@@ -306,5 +417,57 @@ public class Boss extends Enemy {
         isDead = false;
         explosion = null;
         this.visible = true;
+    }
+
+    public void setCurrentFrameIndex(int currentFrameIndex) {
+        this.currentFrameIndex = currentFrameIndex;
+    }
+
+    public void setAnimationCounter(int animationCounter) {
+        this.animationCounter = animationCounter;
+    }
+
+    public void setCurrentFrame(Rectangle currentFrame) {
+        this.currentFrame = currentFrame;
+    }
+
+    public void setWaveCooldown(int waveCooldown) {
+        this.waveCooldown = waveCooldown;
+    }
+
+    public void setWaveCount(int waveCount) {
+        this.waveCount = waveCount;
+    }
+
+    public void setFirstWaveSpawned(boolean firstWaveSpawned) {
+        this.firstWaveSpawned = firstWaveSpawned;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setHitCount(int hitCount) {
+        this.hitCount = hitCount;
+    }
+
+    public void setExplosion(BossExplosion explosion) {
+        this.explosion = explosion;
+    }
+
+    public void setIsExploding(boolean isExploding) {
+        this.isExploding = isExploding;
+    }
+
+    public void setIsDead(boolean isDead) {
+        this.isDead = isDead;
+    }
+
+    public void clearBabyBosses() {
+        babyBosses.clear();
     }
 }

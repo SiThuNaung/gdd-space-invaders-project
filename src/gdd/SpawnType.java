@@ -2,7 +2,7 @@ package gdd;
 
 public enum SpawnType {
     // enemies
-    ALIEN_UFO, FLYING_ALIEN,
+    ALIEN_UFO, FLYING_ALIEN, BOSS,
     // power-ups
     SPEED_BOOST, LIFE, SHIELD, AMMO_UPGRADE
 }

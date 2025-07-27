@@ -69,9 +69,11 @@ public class TitleScene extends JPanel {
 
     private void initAudio() {
         try {
-//            String filePath = "src/audio/title.wav";
-            audioPlayer = new AudioPlayer();
-
+            if (audioPlayer == null) {
+                audioPlayer = new AudioPlayer();
+            } else {
+                audioPlayer.stopScene2Music();
+            }
             audioPlayer.playTitleMusic();
         } catch (Exception e) {
             System.err.println("Error with playing sound.");
@@ -146,7 +148,6 @@ public class TitleScene extends JPanel {
                 // Load the next scene
                 game.loadScene2();
             }
-
         }
     }
 }

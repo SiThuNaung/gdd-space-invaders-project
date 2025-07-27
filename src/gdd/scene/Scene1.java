@@ -46,7 +46,9 @@ public class Scene1 extends JPanel {
     private Player player;
     // private Shot shot;
 
+    // boss stuff
     private PlayerExplosion playerExplosion;
+    private boolean babyBossExplosionsTriggered = false;
 
     final int BLOCKHEIGHT = 50;
     final int BLOCKWIDTH = 50;
@@ -111,8 +113,8 @@ public class Scene1 extends JPanel {
 
     private HashMap<Integer, SpawnDetails> spawnMap = new HashMap<>();
     private AudioPlayer audioPlayer;
-    private int lastRowToShow;
-    private int firstRowToShow;
+
+    private Boss boss;
 
     public Scene1(Game game) {
         this.game = game;
@@ -123,7 +125,6 @@ public class Scene1 extends JPanel {
 
     private void initAudio() {
         try {
-//            String filePath = "src/audio/scene1.wav";
             audioPlayer = new AudioPlayer();
             audioPlayer.playScene2Music();
         } catch (Exception e) {
@@ -132,22 +133,23 @@ public class Scene1 extends JPanel {
     }
 
     private void loadSpawnDetails() {
-        try {
-            // Load from external file
-            spawnMap = SpawnDetailsLoader.loadFromCSV("src/gdd/spawns.csv");
-            System.out.println("Loaded " + spawnMap.size() + " spawn entries from CSV");
-        } catch (IOException e) {
-            System.err.println("Error loading spawn data from CSV: " + e.getMessage());
-        }
-        spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
-        spawnMap.put(200, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
-        spawnMap.put(300, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-        spawnMap.put(400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-        spawnMap.put(800, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-        spawnMap.put(900, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-        spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-        spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-        spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
+//        try {
+//            // Load from external file
+//            spawnMap = SpawnDetailsLoader.loadFromCSV("src/gdd/spawns.csv");
+//            System.out.println("Loaded " + spawnMap.size() + " spawn entries from CSV");
+//        } catch (IOException e) {
+//            System.err.println("Error loading spawn data from CSV: " + e.getMessage());
+//        }
+//        spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
+//        spawnMap.put(200, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+//        spawnMap.put(300, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+//        spawnMap.put(400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+//        spawnMap.put(800, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+//        spawnMap.put(900, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+//        spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+//        spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+//        spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
+        spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
     }
 
     // function to spawn anything from spawn map
@@ -169,6 +171,10 @@ public class Scene1 extends JPanel {
                     case FLYING_ALIEN:
                         Enemy flyingAlien = new FlyingAlien(xPosition, sd.getY());
                         enemies.add(flyingAlien);
+                        break;
+                    case BOSS:
+                        boss = new Boss(xPosition, sd.getY(), player);
+                        enemies.add(boss);
                         break;
                     case SPEED_BOOST:
                         // Handle speed up item spawn
@@ -279,6 +285,8 @@ public class Scene1 extends JPanel {
             }
         }
 
+
+
     }
 
     private void drawGameInfo(Graphics g) {
@@ -377,17 +385,19 @@ public class Scene1 extends JPanel {
     }
 
     private void drawAliens(Graphics g) {
-
         for (Enemy enemy : enemies) {
+            if (enemy instanceof Boss) {
+                Boss.drawBossStuff(g, boss, player, this);
+            } else {
+                if (enemy.isVisible()) {
 
-            if (enemy.isVisible()) {
+                    g.drawImage(enemy.getImage(), enemy.getX(), enemy.getY(), this);
+                }
 
-                g.drawImage(enemy.getImage(), enemy.getX(), enemy.getY(), this);
-            }
+                if (enemy.isDying()) {
 
-            if (enemy.isDying()) {
-
-                enemy.die();
+                    enemy.die();
+                }
             }
         }
     }
@@ -512,30 +522,36 @@ public class Scene1 extends JPanel {
                 timer.stop();
             }
 
-            gameOver(g);
+            saveScore(score);
+
+            if (boss.isDead()) {
+                drawVictory(g);
+            } else {
+                drawGameOver(g);
+            }
         }
 
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void gameOver(Graphics g) {
-
-        g.setColor(Color.black);
-        g.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
-
-        g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
-        g.setColor(Color.white);
-        g.drawRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
-
-        var small = new Font("Helvetica", Font.BOLD, 14);
-        var fontMetrics = this.getFontMetrics(small);
-
-        g.setColor(Color.white);
-        g.setFont(small);
-        g.drawString(message, (BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2,
-                BOARD_WIDTH / 2);
-    }
+//    private void gameOver(Graphics g) {
+//
+//        g.setColor(Color.black);
+//        g.fillRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
+//
+//        g.setColor(new Color(0, 32, 48));
+//        g.fillRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
+//        g.setColor(Color.white);
+//        g.drawRect(50, BOARD_WIDTH / 2 - 30, BOARD_WIDTH - 100, 50);
+//
+//        var small = new Font("Helvetica", Font.BOLD, 14);
+//        var fontMetrics = this.getFontMetrics(small);
+//
+//        g.setColor(Color.white);
+//        g.setFont(small);
+//        g.drawString(message, (BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2,
+//                BOARD_WIDTH / 2);
+//    }
 
     private void handleShooting() {
         audioPlayer.playLaser();
@@ -606,7 +622,7 @@ public class Scene1 extends JPanel {
         while (iterator.hasNext()) {
             Enemy enemy = iterator.next();
 
-            if (enemy.isVisible()) {
+            if (enemy.isVisible() && !(enemy instanceof Boss)) {
                 int y = enemy.getY();
 
                 if (y >= BOARD_HEIGHT) {
@@ -650,7 +666,9 @@ public class Scene1 extends JPanel {
                             && shotY <= (enemyY + enemyHeight)) {
                         score += 5;
                         audioPlayer.playExplosion();
-                        explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getType()));
+                        if (!(enemy instanceof Boss)) {
+                            explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getType()));
+                        }
                         deaths++;
                         enemy.setDying(true);
                         shot.die();
@@ -705,7 +723,7 @@ public class Scene1 extends JPanel {
         // Bomb is with enemy, so it loops over enemies
 
         for (Enemy enemy : enemies) {
-            if (enemy instanceof AlienUFO ufo) {
+            if (enemy instanceof AlienUFO) {
 
                 // Cooldown logic
                 enemy.tickCooldown();
@@ -746,7 +764,84 @@ public class Scene1 extends JPanel {
                 // Clean up destroyed bombs
                 enemy.updateBombs();
             }
-        }    }
+        }
+
+        // Update boss
+        if (boss != null) {
+            if (boss.isVisible()) {
+                boss.act();
+            }
+
+            // Update baby bosses and their explosions
+            List<BabyBoss> babies = boss.getBabyBosses();
+            for (BabyBoss bb : babies) {
+                bb.act(); // Always update baby bosses so explosions animate
+            }
+
+            // Check if boss just started exploding and trigger baby boss explosions
+            if (boss.isExploding() && !boss.isDead() && !babyBossExplosionsTriggered) {
+                BabyBossExplosion.triggerAllBabyBossExplosions(babyBossExplosionsTriggered, boss);
+            }
+
+            if (boss.isDead() && inGame) {
+                if (BabyBossExplosion.areAllBabyBossExplosionsComplete(boss)) {
+                    inGame = false;
+                    System.out.println("THIS IS RUNNING");
+                    clearAllSprites();
+                    System.out.println("Victory! Boss and all baby bosses defeated!");
+                    repaint(); // Force immediate repaint
+                    return; // Skip the rest of the frame processing
+                }
+            }
+
+            // Handle baby boss collisions with player (only if boss not exploding)
+            if (!boss.isExploding()) {
+                for (BabyBoss bb : babies) {
+                    if (bb.isVisible() && player.isVisible()) {
+                        // Check collision using bounds
+                        if (bb.getBounds().intersects(player.getBounds())) {
+                            handleCollision(player.getX(), player.getY());
+                            System.out.println("Player hit by baby boss! Game Over!");
+                            break;
+                        }
+                    }
+                }
+
+                // Collision with boss
+                if (boss.isVisible() && player.isVisible()) {
+                    if (boss.getBounds().intersects(player.getBounds())) {
+                        handleCollision(player.getX(), player.getY());
+                        System.out.println("Player hit by boss! Game Over!");
+                    }
+                }
+
+                // Handle shot collisions (only if boss not exploding)
+                for (Shot shot : player.getShots()) {
+                    if (!shot.isVisible())
+                        continue;
+
+                    // Check bullet-boss collisions
+                    if (shot.getBounds().intersects(boss.getBounds()) && !boss.isDead()) {
+                        boss.takeDamage();
+                        shot.setVisible(false); // Remove the bullet
+                    }
+
+                    // Check bullet-baby boss collisions
+                    for (BabyBoss bb : babies) {
+                        if (bb.isVisible() && !bb.isExploding() && shot.getBounds().intersects(bb.getBounds())) {
+                            // Hit! Remove shot and start explosion
+                            shot.setVisible(false);
+                            System.out.println("=== COLLISION DETECTED ===");
+                            System.out.println("Shot hit baby boss at: " + bb.getX() + ", " + bb.getY());
+                            bb.destroy(); // This will start the explosion animation
+                            System.out.println("Baby boss destroy() called - should be exploding now: " + bb.isExploding());
+                            break; // Exit inner loop since shot is destroyed
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private void handleCollision(int playerX, int playerY) {
         player.setOnCoolDown(true);
@@ -774,6 +869,130 @@ public class Scene1 extends JPanel {
             playerExplosion = new PlayerExplosion(playerX, playerY);
             player.setDying(true);
         }
+    }
+
+    private void clearAllSprites() {
+        // Clear all baby bosses
+        boss.getBabyBosses().clear();
+
+        // Clear all player shots
+        player.getShots().clear();
+
+        // Make sure all sprites are hidden
+        System.out.println("All sprites cleared for victory screen!");
+    }
+
+    private void drawVictory(Graphics g) {
+        // Draw victory screen (same format as game over)
+        g.setColor(Color.GREEN);
+        g.setFont(new Font("Arial", Font.BOLD, 48));
+        String victoryText = "YOU WIN!";
+        FontMetrics fm = g.getFontMetrics();
+        int x = (BOARD_WIDTH - fm.stringWidth(victoryText)) / 2;
+        int y = BOARD_HEIGHT / 2;
+        g.drawString(victoryText, x, y);
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 24));
+        String restartText = "Press R to Play Again";
+        fm = g.getFontMetrics();
+        x = (BOARD_WIDTH - fm.stringWidth(restartText)) / 2;
+        y = y + 60;
+        g.drawString(restartText, x, y);
+        g.drawString("Score: " + score, x + 55, y + 90);
+    }
+
+    private void drawGameOver(Graphics g) {
+        g.setColor(Color.RED);
+        g.setFont(new Font("Arial", Font.BOLD, 48));
+        String gameOverText = "GAME OVER";
+        FontMetrics fm = g.getFontMetrics();
+        int x = (BOARD_WIDTH - fm.stringWidth(gameOverText)) / 2;
+        int y = BOARD_HEIGHT / 2;
+        g.drawString(gameOverText, x, y);
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 24));
+        String restartText = "Press R to Restart";
+        fm = g.getFontMetrics();
+        x = (BOARD_WIDTH - fm.stringWidth(restartText)) / 2;
+        y = y + 60;
+        g.drawString(restartText, x, y);
+//        g.drawString("Press ESC to Exit", x, y + 90);
+        g.drawString("Score: " + score, x + 55, y + 90);
+    }
+
+    private void resetGame() {
+        frame = 0;
+        babyBossExplosionsTriggered = false;
+
+        // Reset player (using the reset method)
+        player.reset();
+        // Additional player variable resets (if not handled in player.reset())
+        player.setLives(3);
+        player.setSpeedStage(1);
+        player.setBulletStage(1);
+        player.setShieldActive(false);
+        player.setOnCoolDown(false);
+        player.setX(270); // START_X
+        player.setY(540); // START_Y
+
+        // Reset boss (using the reset method)
+        if (boss != null) {
+            boss.reset();
+            // Additional boss variable resets (if not handled in boss.reset())
+            boss.setCurrentFrameIndex(0);
+            boss.setAnimationCounter(0);
+            boss.clearBabyBosses(); // Clear the babyBosses list
+            boss.setWaveCooldown(0);
+            boss.setWaveCount(0);
+            boss.setFirstWaveSpawned(false);
+            boss.setHitCount(0);
+            boss.setExplosion(null);
+            boss.setIsExploding(false);
+            boss.setIsDead(false);
+        }
+
+        // Clear all game object lists
+        shots.clear();
+        enemies.clear();
+        explosions.clear();
+        powerups.clear();
+
+        // Reset game state variables
+        score = 0;
+
+        // Reset stage tracking
+        currentStage = 1;
+        stage2MessageShown = false;
+        stage3MessageShown = false;
+
+        // Reset fade/message system
+        fadeTimer = 0;
+        isFading = false;
+        message = "Game Over"; // Reset to default message
+
+        // Reset shield system
+        currentShield = null;
+        isOnCooldown = false;
+
+        // Reset player explosion if it exists
+        if (playerExplosion != null) {
+            playerExplosion.setClipNo(0);
+            playerExplosion.setAnimationCounter(0);
+            playerExplosion = null;
+        }
+
+        // Restart the game timer if it was stopped
+        if (timer != null && !timer.isRunning()) {
+            timer.start();
+        }
+
+    }
+
+    private void restartGame() {
+        resetGame();
+        inGame = true;
     }
 
     // Method to trigger a fade message
@@ -1072,7 +1291,19 @@ public class Scene1 extends JPanel {
                     handleShooting();
                 }
             }
+
+            if (e.getKeyCode() == KeyEvent.VK_R && (!inGame)) {
+                restartGame();
+            }
+
+//            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+//                resetGame();
+//                stop();
+//                game.loadTitle();
+//                SwingUtilities.invokeLater(() -> {
+//                    game.getTitleScene().requestFocusInWindow();
+//                });
+//            }
         }
     }
 }
-

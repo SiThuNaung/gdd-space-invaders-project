@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
+import java.util.List;
 import javax.swing.ImageIcon;
 
 public class BabyBossExplosion extends Sprite {
@@ -128,7 +129,42 @@ public class BabyBossExplosion extends Sprite {
         initExplosion(x, y);
         animationCounter = 0;
     }
-    
+
+    public static void triggerAllBabyBossExplosions(boolean babyBossExplosionsTriggered, Boss boss) {
+        babyBossExplosionsTriggered = true;
+        List<BabyBoss> babies = boss.getBabyBosses();
+
+        for (BabyBoss bb : babies) {
+            if (bb.isVisible() && !bb.isExploding()) {
+                bb.destroy(); // Start explosion animation
+                System.out.println("Triggering baby boss explosion at: " + bb.getX() + ", " + bb.getY());
+            }
+        }
+        System.out.println("All baby boss explosions triggered!");
+    }
+
+    public static boolean areAllBabyBossExplosionsComplete(Boss boss) {
+        List<BabyBoss> babies = boss.getBabyBosses();
+
+        // If no baby bosses, explosions are complete
+        if (babies.isEmpty())
+            return true;
+
+        for (BabyBoss bb : babies) {
+            // If baby boss is still visible and not exploding, it's still active
+            if (bb.isVisible() && !bb.isExploding()) {
+                return false;
+            }
+            // If baby boss is exploding but explosion is still visible
+            if (bb.isExploding() && bb.getExplosion() != null && bb.getExplosion().isVisible()) {
+                return false;
+            }
+        }
+
+        System.out.println("All baby boss explosions complete!");
+        return true;
+    }
+
     // Helper method to get current frame info for debugging
     public String getDebugInfo() {
         return String.format("Frame %d/%d, Counter: %d, Visible: %b", 

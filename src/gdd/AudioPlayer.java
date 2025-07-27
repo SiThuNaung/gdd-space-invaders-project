@@ -121,6 +121,7 @@ public class AudioPlayer {
     // Enhanced title music methods with pause/resume support
     public void playTitleMusic() {
         if (titleClip != null) {
+            titleClip.setFramePosition(0);
             titleClip.loop(Clip.LOOP_CONTINUOUSLY);
             titleStatus = "playing";
         }
