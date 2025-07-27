@@ -111,6 +111,10 @@ public class FlyingAlien extends Enemy {
     public int getHeight() {
         return currentFrame != null ? currentFrame.height : super.getHeight();
     }
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, getWidth(), getHeight());
+    }
 
     @Override
     public void act() {

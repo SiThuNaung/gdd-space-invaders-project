@@ -122,6 +122,11 @@ public class AlienUFO extends Enemy {
     }
 
     @Override
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, getWidth(), getHeight());
+    }
+
+    @Override
     public void act() {
         super.act();
         animationCounter++;

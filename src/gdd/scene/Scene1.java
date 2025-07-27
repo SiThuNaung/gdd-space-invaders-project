@@ -150,7 +150,7 @@ public class Scene1 extends JPanel {
         // spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
         // spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
         // spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
-        // spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
+         //spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
     }
 
     // function to spawn anything from spawn map
@@ -752,7 +752,14 @@ public class Scene1 extends JPanel {
         // Bomb is with enemy, so it loops over enemies
 
         for (Enemy enemy : enemies) {
+            // ufo collide
             if (enemy instanceof AlienUFO) {
+                if (enemy.isVisible() && player.isVisible()) {
+                    if (enemy.getBounds().intersects(player.getBounds())) {
+                        handleCollision(player.getX(), player.getY());
+                        System.out.println("Player hit by alienufo! Game Over!");
+                    }
+                }
 
                 // Cooldown logic
                 enemy.tickCooldown();
@@ -792,6 +799,15 @@ public class Scene1 extends JPanel {
 
                 // Clean up destroyed bombs
                 enemy.updateBombs();
+            }
+            // collide with flying alien
+            if (enemy instanceof FlyingAlien) {
+                if (enemy.isVisible() && player.isVisible()) {
+                    if (enemy.getBounds().intersects(player.getBounds())) {
+                        handleCollision(player.getX(), player.getY());
+                        System.out.println("Player hit by flyingalien! Game Over!");
+                    }
+                }
             }
         }
 
