@@ -4,6 +4,7 @@ import static gdd.Global.*;
 
 import javax.swing.ImageIcon;
 import java.awt.Image;
+import java.awt.Rectangle;
 
 public class Shot extends Sprite {
     private static final int H_SPACE = 20;
@@ -17,6 +18,7 @@ public class Shot extends Sprite {
     public Shot() {}
 
     public Shot(int shipX, int shipY, int shipWidth) {
+        super(); // Call Sprite constructor
         initShot(shipX, shipY, shipWidth);
     }
 
@@ -36,6 +38,9 @@ public class Shot extends Sprite {
 
         setX(shotX);
         setY(shotY);
+        setVisible(true); // Make sure shot is visible
+
+        System.out.println("Shot created at (" + shotX + ", " + shotY + ") with size " + scaledWidth + "x" + scaledHeight);
     }
 
     public Shot(int x, int y, int dx, int dy) {
@@ -67,6 +72,11 @@ public class Shot extends Sprite {
     }
 
     // Getters for velocity (if needed elsewhere)
+
     public int getDx() { return dx; }
     public int getDy() { return dy; }
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, getWidth(), getHeight());
+    }
 }

@@ -1,7 +1,6 @@
 package gdd.sprite;
 
-import java.awt.Image;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 abstract public class Sprite {
@@ -111,4 +110,7 @@ abstract public class Sprite {
         return image != null ? image.getHeight(null) : 0;
     }
 
+    public Rectangle getBounds() {
+        return null;
+    }
 }

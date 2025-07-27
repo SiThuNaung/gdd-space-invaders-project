@@ -49,6 +49,10 @@ public class Global {
     public static final String IMG_HEALTH_ICON = "src/images/health_info_icon.png";
     public static final String IMG_FLYING_ALIEN = "src/images/flying_alien.png";
     public static final String IMG_FLYING_ALIEN_EXPLOSION = "src/images/flying_alien_explosion.png";
+    public static final String IMG_BOSS = "src/images/boss_3.png";
+    public static final String IMG_BABY_BOSS = "src/images/boss_2.png";
+    public static final String IMG_BABY_BOSS_EXPLOSION = "src/images/baby_boss_explosion.png";
+    public static final String IMG_BOSS_EXPLOSION = "src/images/boss_explosion.png";
 
     // Stage timings in frame
     public static final int STAGE_1_END = 18000;   // 5 minutes (halfway)
