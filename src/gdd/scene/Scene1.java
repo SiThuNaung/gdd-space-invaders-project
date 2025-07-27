@@ -137,16 +137,16 @@ public class Scene1 extends JPanel {
 //        } catch (IOException e) {
 //            System.err.println("Error loading spawn data from CSV: " + e.getMessage());
 //        }
-//        spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
-//        spawnMap.put(200, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
-//        spawnMap.put(300, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-//        spawnMap.put(400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-//        spawnMap.put(800, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-//        spawnMap.put(900, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-//        spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
-//        spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
-//        spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
-        spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
+        spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
+        spawnMap.put(200, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        spawnMap.put(300, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        spawnMap.put(400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+        spawnMap.put(800, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        spawnMap.put(900, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+        spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
+        spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
+//        spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
     }
 
     // function to spawn anything from spawn map
@@ -166,7 +166,7 @@ public class Scene1 extends JPanel {
                         break;
                     // Add more cases for different enemy types if needed
                     case FLYING_ALIEN:
-                        Enemy flyingAlien = new FlyingAlien(xPosition, sd.getY());
+                        Enemy flyingAlien = new FlyingAlien(xPosition, sd.getY(), player);
                         enemies.add(flyingAlien);
                         break;
                     case BOSS:
