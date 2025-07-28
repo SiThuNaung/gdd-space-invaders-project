@@ -7,7 +7,7 @@ A vertical scrolling shooter game developed as a university project. This game f
 ## 🎓 Project Information
 
 - **University:** Assumption University, Thailand
-- **Course Codes:** ITX4606(542), CSX4515(542)
+- **Course Codes:** ITX4606(541/542), CSX4515(541/542)
 - **Project Forked From:**  
   Original repository: [mchayapol/gdd-space-invaders-project](https://github.com/mchayapol/gdd-space-invaders-project)  
   Credits to [@mchayapol](https://github.com/mchayapol)
