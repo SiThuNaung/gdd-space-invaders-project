@@ -14,54 +14,54 @@ import java.util.List;
 
 public class Boss extends Enemy {
 
-    private final Rectangle[] bossFrames = new Rectangle[]{
+    private final Rectangle[] bossFrames = new Rectangle[] {
             // Row 1
-            new Rectangle(0, 0, 84, 84),      // Frame 1
-            new Rectangle(84, 0, 84, 84),     // Frame 2
-            new Rectangle(168, 0, 84, 84),    // Frame 3
-            new Rectangle(252, 0, 84, 84),    // Frame 4
-            new Rectangle(336, 0, 84, 84),    // Frame 5
+            new Rectangle(0, 0, 84, 84), // Frame 1
+            new Rectangle(84, 0, 84, 84), // Frame 2
+            new Rectangle(168, 0, 84, 84), // Frame 3
+            new Rectangle(252, 0, 84, 84), // Frame 4
+            new Rectangle(336, 0, 84, 84), // Frame 5
 
             // Row 2
-            new Rectangle(0, 84, 84, 84),     // Frame 6
-            new Rectangle(84, 84, 84, 84),    // Frame 7
-            new Rectangle(168, 84, 84, 84),   // Frame 8
-            new Rectangle(252, 84, 84, 84),   // Frame 9
-            new Rectangle(336, 84, 84, 84),   // Frame 10
+            new Rectangle(0, 84, 84, 84), // Frame 6
+            new Rectangle(84, 84, 84, 84), // Frame 7
+            new Rectangle(168, 84, 84, 84), // Frame 8
+            new Rectangle(252, 84, 84, 84), // Frame 9
+            new Rectangle(336, 84, 84, 84), // Frame 10
 
             // Row 3
-            new Rectangle(0, 168, 84, 84),    // Frame 11
-            new Rectangle(84, 168, 84, 84),   // Frame 12
-            new Rectangle(168, 168, 84, 84),  // Frame 13
-            new Rectangle(252, 168, 84, 84),  // Frame 14
-            new Rectangle(336, 168, 84, 84),  // Frame 15
+            new Rectangle(0, 168, 84, 84), // Frame 11
+            new Rectangle(84, 168, 84, 84), // Frame 12
+            new Rectangle(168, 168, 84, 84), // Frame 13
+            new Rectangle(252, 168, 84, 84), // Frame 14
+            new Rectangle(336, 168, 84, 84), // Frame 15
 
             // Row 4
-            new Rectangle(0, 252, 84, 84),    // Frame 16
-            new Rectangle(84, 252, 84, 84),   // Frame 17
-            new Rectangle(168, 252, 84, 84),  // Frame 18
-            new Rectangle(252, 252, 84, 84),  // Frame 19
-            new Rectangle(336, 252, 84, 84),  // Frame 20
+            new Rectangle(0, 252, 84, 84), // Frame 16
+            new Rectangle(84, 252, 84, 84), // Frame 17
+            new Rectangle(168, 252, 84, 84), // Frame 18
+            new Rectangle(252, 252, 84, 84), // Frame 19
+            new Rectangle(336, 252, 84, 84), // Frame 20
 
             // Row 5
-            new Rectangle(0, 336, 84, 84),    // Frame 21
-            new Rectangle(84, 336, 84, 84),   // Frame 22
-            new Rectangle(168, 336, 84, 84),  // Frame 23
-            new Rectangle(252, 336, 84, 84),  // Frame 24
-            new Rectangle(336, 336, 84, 84),  // Frame 25
+            new Rectangle(0, 336, 84, 84), // Frame 21
+            new Rectangle(84, 336, 84, 84), // Frame 22
+            new Rectangle(168, 336, 84, 84), // Frame 23
+            new Rectangle(252, 336, 84, 84), // Frame 24
+            new Rectangle(336, 336, 84, 84), // Frame 25
 
             // Row 6
-            new Rectangle(0, 420, 84, 84),    // Frame 26
-            new Rectangle(84, 420, 84, 84),   // Frame 27
-            new Rectangle(168, 420, 84, 84),  // Frame 28
-            new Rectangle(252, 420, 84, 84),  // Frame 29
-            new Rectangle(336, 420, 84, 84),  // Frame 30
+            new Rectangle(0, 420, 84, 84), // Frame 26
+            new Rectangle(84, 420, 84, 84), // Frame 27
+            new Rectangle(168, 420, 84, 84), // Frame 28
+            new Rectangle(252, 420, 84, 84), // Frame 29
+            new Rectangle(336, 420, 84, 84), // Frame 30
 
             // Row 7 (2 frames only)
-            new Rectangle(0, 504, 84, 84),    // Frame 31
-            new Rectangle(84, 504, 84, 84)    // Frame 32
+            new Rectangle(0, 504, 84, 84), // Frame 31
+            new Rectangle(84, 504, 84, 84) // Frame 32
     };
-    
+
     private int currentFrameIndex = 0;
     private int animationCounter = 0;
     private final int ANIMATION_DELAY = 6;
@@ -72,16 +72,18 @@ public class Boss extends Enemy {
     private List<BabyBoss> babyBosses = new ArrayList<>();
     private int waveCooldown = 0;
     private int waveCount = 0;
-    private final int MAX_WAVES = 5;
-    private final int FIRST_WAVE_DELAY = 150;
-    private final int WAVE_INTERVAL = 300; // ~10s at 30fps (30 * 10 = 300)
+    private final int MAX_WAVES = 400;
+    private final int FIRST_WAVE_DELAY = 50;
+    private final int WAVE_INTERVAL = 100; // ~10s at 30fps (30 * 10 = 300)
     private boolean firstWaveSpawned = false; // Track if first wave has been spawned
 
     private Player player;
-    
+    private boolean movingRight = true; // Boss movement direction
+
+
     // Boss health and explosion system
     private int hitCount = 0;
-    private final int MAX_HITS = 30;
+    private final int MAX_HITS = 80;
     private BossExplosion explosion = null;
     private boolean isExploding = false;
     private boolean isDead = false;
@@ -99,12 +101,17 @@ public class Boss extends Enemy {
         setImage(new ImageIcon(IMG_BOSS).getImage());
         currentFrame = bossFrames[0];
     }
-    
+
     @Override
     public void act() {
         // If boss is dead, don't do anything
-        if (isDead) return;
-        
+        if (isDead)
+            return;
+        if (y < 50) {
+            y += 2;
+            return;
+        }
+
         // Handle explosion animation
         if (isExploding) {
             if (explosion != null) {
@@ -116,6 +123,21 @@ public class Boss extends Enemy {
                 }
             }
             return; // Don't do normal boss behavior during explosion
+        }
+
+        // boss left right movement
+        int moveSpeed = 2; // Adjust speed as needed
+        int leftBoundary = 0; // Minimum X position
+        int rightBoundary = BOARD_WIDTH - getWidth();  // Maximum X position (adjust to screen width)
+
+        // Move boss left/right
+        x += moveSpeed * (movingRight ? 1 : -1);
+
+        // Change direction at screen edges
+        if (x <= leftBoundary) {
+            movingRight = true; // Turn right
+        } else if (x  >= rightBoundary) {
+            movingRight = false; // Turn left
         }
 
         // Normal boss behavior
@@ -137,7 +159,8 @@ public class Boss extends Enemy {
                     firstWaveSpawned = true;
                     waveCount++;
                     waveCooldown = 0;
-                    System.out.println("Wave " + waveCount + " spawned after delay! (" + babyBosses.size() + " baby bosses)");
+                    System.out.println(
+                            "Wave " + waveCount + " spawned after delay! (" + babyBosses.size() + " baby bosses)");
                 }
             } else {
                 // Subsequent waves logic remains the same
@@ -146,7 +169,8 @@ public class Boss extends Enemy {
                     spawnBabyBosses();
                     waveCooldown = 0;
                     waveCount++;
-                    System.out.println("Wave " + waveCount + " spawned after 10s wait! (" + babyBosses.size() + " baby bosses)");
+                    System.out.println(
+                            "Wave " + waveCount + " spawned after 10s wait! (" + babyBosses.size() + " baby bosses)");
                 }
             }
         }
@@ -162,19 +186,20 @@ public class Boss extends Enemy {
             }
         }
     }
-    
+
     // Method to handle boss getting hit
     public void takeDamage() {
-        if (isExploding || isDead) return;
-        
+        if (isExploding || isDead)
+            return;
+
         hitCount++;
         System.out.println("Boss hit! " + hitCount + "/" + MAX_HITS);
-        
+
         if (hitCount >= MAX_HITS) {
             startExplosion();
         }
     }
-    
+
     private void startExplosion() {
         isExploding = true;
         explosion = new BossExplosion(this.x, this.y);
@@ -186,8 +211,9 @@ public class Boss extends Enemy {
     }
 
     private void spawnBabyBosses() {
-        // Clear previous wave (optional - you can remove this if you want accumulated waves)
-        babyBosses.clear();
+        // Clear previous wave (optional - you can remove this if you want accumulated
+        // waves)
+        //babyBosses.clear();
 
         int baseX = this.x + this.getWidth() / 2;
         int baseY = this.y + this.getHeight();
@@ -195,10 +221,10 @@ public class Boss extends Enemy {
         int spacing = 50; // Increased spacing for better visibility
 
         // U-shaped formation with 7 baby bosses
-        int[] offsetsX = {-3, -2, -1, 0, 1, 2, 3};
-        int[] offsetsY = {50, 30, 15, 0, 15, 30, 50}; // U shape - outer ones lower
+        int[] offsetsX = { -3, -2, -1, 0, 1, 2, 3 };
+        int[] offsetsY = { 50, 30, 15, 0, 15, 30, 50 }; // U shape - outer ones lower
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             int bx = baseX + offsetsX[i] * spacing;
             int by = baseY + offsetsY[i];
 
@@ -248,14 +274,14 @@ public class Boss extends Enemy {
         }
 
         // Draw player shots only if boss isn't exploding
-//        if (!boss.isExploding()) {
-//            List<Shot> playerShots = player.getShots();
-//            for (Shot shot : playerShots) {
-//                if (shot.isVisible()) {
-//                    g.drawImage(shot.getImage(), shot.getX(), shot.getY(), scene1);
-//                }
-//            }
-//        }
+        // if (!boss.isExploding()) {
+        // List<Shot> playerShots = player.getShots();
+        // for (Shot shot : playerShots) {
+        // if (shot.isVisible()) {
+        // g.drawImage(shot.getImage(), shot.getX(), shot.getY(), scene1);
+        // }
+        // }
+        // }
 
         drawBossUI(g, boss);
     }
@@ -265,12 +291,13 @@ public class Boss extends Enemy {
         g.setFont(new Font("Arial", Font.BOLD, 16));
 
         // Wave information
-        String waveInfo = "Wave: " + boss.getCurrentWave() + "/" + boss.getMaxWaves();
-        g.drawString(waveInfo, 10, 25);
+        // String waveInfo = "Wave: " + boss.getCurrentWave() + "/" +
+        // boss.getMaxWaves();
+        // g.drawString(waveInfo, 10, 50);
 
         // Baby boss count
-        String babyCount = "Baby Bosses: " + boss.getBabyBosses().size();
-        g.drawString(babyCount, 10, 45);
+        // String babyCount = "Baby Bosses: " + boss.getBabyBosses().size();
+        // g.drawString(babyCount, 10, 45);
 
         // Boss health information
         String healthInfo = "Boss Health: " + (boss.getMaxHits() - boss.getHitCount()) + "/" + boss.getMaxHits();
@@ -299,7 +326,7 @@ public class Boss extends Enemy {
         if (boss.getCurrentWave() < boss.getMaxWaves() && !boss.isExploding()) {
             int timeLeft = boss.getTimeUntilNextWave() / 30; // Convert frames to seconds
             if (boss.getCurrentWave() == 0) {
-                g.drawString("First wave spawning now!", 10, 105);
+                g.drawString("Baby Boss spawning now!", 10, 105);
             } else {
                 String nextWave = "Next wave in: " + timeLeft + "s";
                 g.drawString(nextWave, 10, 105);
@@ -322,9 +349,10 @@ public class Boss extends Enemy {
         if (isExploding && explosion != null) {
             return explosion.getImage();
         }
-        
+
         // Normal boss image
-        if (image == null || currentFrame == null) return null;
+        if (image == null || currentFrame == null)
+            return null;
 
         BufferedImage bImage = toBufferedImage(image);
         Rectangle r = currentFrame;
@@ -344,7 +372,7 @@ public class Boss extends Enemy {
         if (isExploding && explosion != null) {
             return explosion.getWidth();
         }
-        return currentFrame != null ? (int)(currentFrame.width * SCALE) : super.getWidth();
+        return currentFrame != null ? (int) (currentFrame.width * SCALE) : super.getWidth();
     }
 
     @Override
@@ -352,7 +380,7 @@ public class Boss extends Enemy {
         if (isExploding && explosion != null) {
             return explosion.getHeight();
         }
-        return currentFrame != null ? (int)(currentFrame.height * SCALE) : super.getHeight();
+        return currentFrame != null ? (int) (currentFrame.height * SCALE) : super.getHeight();
     }
 
     @Override
@@ -384,18 +412,32 @@ public class Boss extends Enemy {
 
     // Method to get time until next wave (for UI display)
     public int getTimeUntilNextWave() {
-        if (waveCount >= MAX_WAVES) return 0;
-        if (!firstWaveSpawned) return 0; // First wave spawns immediately
+        if (waveCount >= MAX_WAVES)
+            return 0;
+        if (!firstWaveSpawned)
+            return 0; // First wave spawns immediately
         return Math.max(0, WAVE_INTERVAL - waveCooldown);
     }
-    
+
     // Getters for boss state
-    public int getHitCount() { return hitCount; }
-    public int getMaxHits() { return MAX_HITS; }
-    public boolean isExploding() { return isExploding; }
-    public boolean isDead() { return isDead; }
-    public float getHealthPercentage() { 
-        return (float)(MAX_HITS - hitCount) / MAX_HITS; 
+    public int getHitCount() {
+        return hitCount;
+    }
+
+    public int getMaxHits() {
+        return MAX_HITS;
+    }
+
+    public boolean isExploding() {
+        return isExploding;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public float getHealthPercentage() {
+        return (float) (MAX_HITS - hitCount) / MAX_HITS;
     }
 
     // Add getBounds method to Player class if not present

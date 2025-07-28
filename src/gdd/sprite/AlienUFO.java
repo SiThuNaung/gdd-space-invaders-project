@@ -18,12 +18,12 @@ public class AlienUFO extends Enemy {
     private static final String ACT_EXPLOSION = "EXPLOSION";
     private String action = ACT_FLYING;
 
-    private int dy = 3;
+    private int dy = 1;
 
     // 🟡 Zig-Zag Movement Variables
-    private int dx = 2; // horizontal speed
+    private int dx = 3; // horizontal speed
     private int zigzagCounter = 0;
-    private final int ZIGZAG_INTERVAL = 60;
+    private final int ZIGZAG_INTERVAL = 600;
 
     private final Rectangle[] flyingFrames = new Rectangle[] {
             new Rectangle(15, 33, 28, 29),

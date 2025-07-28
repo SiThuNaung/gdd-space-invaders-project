@@ -12,7 +12,7 @@ public class Global {
     public static final int BORDER_RIGHT = 60; // Doubled from 30
     public static final int BORDER_LEFT = 10; // Doubled from 5
 
-    public static final int GROUND = 580; // Doubled from 290
+    public static final int GROUND = 780; // Doubled from 290
     public static final int BOMB_HEIGHT = 10; // Doubled from 5
 
     public static final int ALIEN_HEIGHT = 24; // Doubled from 12
@@ -80,5 +80,7 @@ public class Global {
     public static final String LOSING_SOUND = "src/audio/gameover.wav";
     public static final String BABY_BOSS_SOUND = "src/audio/baby_boss.wav";
     public static final String FLYING_ALIEN_SOUND = "src/audio/flying_alien.wav";
+    public static final String SPACE_SHIP_EXPLOSION__SOUND = "src/audio/spaceship_explosion.wav";
+    public static final String BOSS_SCENE_SOUND = "src/audio/boss_scene.wav";
 
 }

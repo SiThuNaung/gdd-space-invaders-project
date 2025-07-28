@@ -17,9 +17,11 @@ public class AudioPlayer {
     private Clip bossScreamClip ;
     private Clip winningClip ;
     private Clip gameoverClip ;
+    private Clip spaceshipClip ;
  
     private Clip titleClip;
     private Clip scene2Clip;
+    private Clip bossSceneClip;
  
     private Clip healthPowerUpClip;
     private Clip normalPowerUpClip;
@@ -28,19 +30,23 @@ public class AudioPlayer {
     private Clip shieldGuardSoundClip;
  
     // Track current positions for pause/resume functionality
+    private Long bossSceneCurrentFrame = 0L;
     private Long titleCurrentFrame = 0L;
     private Long scene2CurrentFrame = 0L;
  
     // Track playback status
     private String titleStatus = "stopped";
     private String scene2Status = "stopped";
+    private String bossSceneStatus = "stopped";
  
     // Store file paths for reset functionality
+    private String spaceshipPath;
     private String winningPath;
     private String gameoverPath;
     private String bossScreamPath;
     private String titleMusicPath;
     private String scene2MusicPath;
+    private String bossSceneMusicPath;
  
     private int laserClipIndex = 0;
     private int explosionClipIndex = 0;
@@ -63,17 +69,21 @@ public class AudioPlayer {
  
     private void initSounds() {
         // Store paths for later use
+        spaceshipPath= SPACE_SHIP_EXPLOSION__SOUND;
         gameoverPath= LOSING_SOUND;
         winningPath = WINNING_SOUND;
         bossScreamPath= BOSS_SCREAM_SOUND;
         titleMusicPath = TITLE_MUSIC;
         scene2MusicPath = SCENE2_MUSIC;
- 
+        bossSceneMusicPath = BOSS_SCENE_SOUND;
+        
+        File spaceshipFile = new File(spaceshipPath);
         File winningFile = new File(winningPath);
         File gameoverFile = new File(gameoverPath);
         File bossScreamFile = new File(bossScreamPath);
         File titleMusicFile = new File(titleMusicPath);
         File scene2MusicFile = new File(scene2MusicPath);
+        File bossScenFile = new File(bossSceneMusicPath);
  
         flyingAlienClips = new ArrayList<>();
         babyBossClips = new ArrayList<>();
@@ -85,6 +95,11 @@ public class AudioPlayer {
             bossScreamClip = AudioSystem.getClip();
             bossScreamClip.open(bossScreamStream);
             setVolume(bossScreamClip, 0.75f);
+
+            AudioInputStream spaceshipStream = AudioSystem.getAudioInputStream(spaceshipFile);
+            spaceshipClip = AudioSystem.getClip();
+            spaceshipClip.open(spaceshipStream);
+            setVolume(spaceshipClip, 0.75f);
  
             AudioInputStream winningStream = AudioSystem.getAudioInputStream(winningFile);
             winningClip = AudioSystem.getClip();
@@ -105,6 +120,11 @@ public class AudioPlayer {
             scene2Clip = AudioSystem.getClip();
             scene2Clip.open(scene2AudioStream);
             setVolume(scene2Clip, 0.75f);
+
+            AudioInputStream bossSceneAudioStream = AudioSystem.getAudioInputStream(bossScenFile);
+            bossSceneClip = AudioSystem.getClip();
+            bossSceneClip.open(bossSceneAudioStream);
+            setVolume(bossSceneClip, 0.75f);
  
  
             AudioInputStream healthPowerUpStream = AudioSystem.getAudioInputStream(new File(HEALTH_POWERUP));
@@ -174,6 +194,13 @@ public class AudioPlayer {
             titleStatus = "playing";
         }
     }
+    // Enhanced title music methods with pause/resume support
+    public void playBossSceneMusic() {
+        if (bossSceneClip != null) {
+            bossSceneClip.loop(Clip.LOOP_CONTINUOUSLY);
+            bossSceneStatus = "playing";
+        }
+    }
  
     public void pauseTitleMusic() {
         if (titleClip != null && titleStatus.equals("playing")) {
@@ -219,6 +246,14 @@ public class AudioPlayer {
             titleStatus = "stopped";
         }
     }
+    public void stopBossSceneMusic() {
+        if (bossSceneClip != null) {
+            bossSceneCurrentFrame = 0L;
+            bossSceneClip.stop();
+            bossSceneClip.close();
+            bossSceneStatus = "stopped";
+        }
+    }
  
     // Enhanced scene2 music methods with pause/resume support
     public void playScene2Music() {
@@ -261,6 +296,13 @@ public class AudioPlayer {
             } catch (Exception e) {
                 System.err.println("Error restarting scene2 music: " + e.getMessage());
             }
+        }
+    }
+
+    public void playSpaceshipExplosion() {
+        if (spaceshipClip != null) {
+            spaceshipClip.setFramePosition(0);
+            spaceshipClip.start();
         }
     }
  
@@ -408,6 +450,10 @@ public class AudioPlayer {
  
     public String getTitleStatus() {
         return titleStatus;
+    }
+
+    public String getBossSceneStatus() {
+        return bossSceneStatus;
     }
  
     public String getScene2Status() {

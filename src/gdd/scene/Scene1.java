@@ -142,15 +142,21 @@ public class Scene1 extends JPanel {
             System.err.println("Error loading spawn data from CSV: " + e.getMessage());
         }
         // spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
-        // spawnMap.put(200, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        // spawnMap.put(100, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        //spawnMap.put(100, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        // spawnMap.put(2000, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        // spawnMap.put(3000, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        // spawnMap.put(100, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
         // spawnMap.put(300, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        // spawnMap.put(200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
+        // spawnMap.put(400, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
         // spawnMap.put(400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
         // spawnMap.put(800, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
         // spawnMap.put(900, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
         // spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
         // spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
         // spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
-         //spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 300, 100, 1, 0));
+        //spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 270, 0, 1, 0));
     }
 
     // function to spawn anything from spawn map
@@ -226,6 +232,7 @@ public class Scene1 extends JPanel {
         try {
             if (audioPlayer != null) {
                 audioPlayer.stopScene2Music();
+                audioPlayer.stopBossSceneMusic();
             }
         } catch (Exception e) {
             System.err.println("Error closing audio player.");
@@ -561,25 +568,25 @@ public class Scene1 extends JPanel {
         audioPlayer.playLaser();
         if (player.getBulletStage() == 1) {
             // Single shot - straight up
-            shots.add(new Shot(player.getX() + player.getWidth() / 2, player.getY(), 0, -3));
+            shots.add(new Shot(player.getX() , player.getY(), 0, -3));
 
         } else if (player.getBulletStage() == 2) {
             // Double shot - slight spread
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 - 10, player.getY(), -1, -3));
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 + 10, player.getY(), 1, -3));
+            shots.add(new Shot(player.getX() - 10, player.getY(), -1, -3));
+            shots.add(new Shot(player.getX()  + 10, player.getY(), 1, -3));
 
         } else if (player.getBulletStage() == 3) {
             // Triple shot - center straight, sides angled
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 - 20, player.getY(), -2, -3));
-            shots.add(new Shot(player.getX() + player.getWidth() / 2, player.getY(), 0, -3));
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 + 20, player.getY(), 2, -3));
+            shots.add(new Shot(player.getX()  - 20, player.getY(), -2, -3));
+            shots.add(new Shot(player.getX() , player.getY(), 0, -3));
+            shots.add(new Shot(player.getX()  + 20, player.getY(), 2, -3));
 
         } else if (player.getBulletStage() == 4) {
             // Quad shot - outer ones scatter more, inner ones slight scatter
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 - 30, player.getY(), -3, -3)); // Far left
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 - 10, player.getY(), -1, -3)); // Inner left
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 + 10, player.getY(), 1, -3)); // Inner right
-            shots.add(new Shot(player.getX() + player.getWidth() / 2 + 30, player.getY(), 3, -3)); // Far right
+            shots.add(new Shot(player.getX() - 30, player.getY(), -3, -3)); // Far left
+            shots.add(new Shot(player.getX()  - 10, player.getY(), -1, -3)); // Inner left
+            shots.add(new Shot(player.getX()  + 10, player.getY(), 1, -3)); // Inner right
+            shots.add(new Shot(player.getX()  + 30, player.getY(), 3, -3)); // Far right
         }
     }
 
@@ -891,6 +898,7 @@ public class Scene1 extends JPanel {
             }
         }
         shots.removeAll(shotsToRemove);
+       //System.out.println(player.isShieldActive());
     }
 
     private void handleCollision(int playerX, int playerY) {
@@ -900,17 +908,20 @@ public class Scene1 extends JPanel {
             if (player.getLives() != 0) {
                 audioPlayer.playPlayerHitSound();
             } else {
+                audioPlayer.playSpaceshipExplosion();;
                 // Audio here for player death
             }
         } else {
+            //player.setShieldActive(false);
             currentShield.disposeShieldTimer();
+            player.setShieldActive(false);
             audioPlayer.playShieldGuardSound();
         }
 
         // cool down period for player
         new Timer(1000, e -> {
             if (player.isShieldActive()) {
-                player.setShieldActive(false);
+                //player.setShieldActive(false);
             }
             player.setOnCoolDown(false);
         }).start();
@@ -935,6 +946,7 @@ public class Scene1 extends JPanel {
     private void drawVictory(Graphics g) {
         // Draw victory screen (same format as game over) 
         audioPlayer.stopScene2Music();
+        audioPlayer.stopBossSceneMusic();
         audioPlayer.playWinning();
         win=true;
         g.setColor(Color.GREEN);
@@ -957,6 +969,7 @@ public class Scene1 extends JPanel {
 
     private void drawGameOver(Graphics g) {
         audioPlayer.stopScene2Music();
+        audioPlayer.stopBossSceneMusic();
         audioPlayer.playGameOver();
         lose=true;
         g.setColor(Color.RED);
@@ -1083,6 +1096,9 @@ public class Scene1 extends JPanel {
             showFadeMessage("Meet the big boss...");
             audioPlayer.playWarpSound();
             stage3MessageShown = true;
+            audioPlayer.stopScene2Music();
+            audioPlayer.playBossSceneMusic();
+
         }
     }
 

@@ -44,7 +44,7 @@ public class BossExplosion {
     private int currentFrameIndex = 0;
     private int animationCounter = 0;
     private final int ANIMATION_DELAY = 3; // Faster animation for explosion
-    private final double SCALE = 3.0;
+    private final double SCALE = 2.0;
     private boolean animationComplete = false;
     private boolean visible = true;
     private AudioPlayer audioPlayer;

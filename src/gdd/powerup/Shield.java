@@ -8,7 +8,6 @@ import java.awt.*;
 import static gdd.Global.IMG_POWERUP_SHIELD;
 import java.awt.geom.Ellipse2D;
 
-
 public class Shield extends PowerUp {
     private Timer shieldTimer = null;
     private static int shieldRadius = 40;
@@ -17,10 +16,9 @@ public class Shield extends PowerUp {
         super(x, y);
 
         ImageIcon ii = new ImageIcon(IMG_POWERUP_SHIELD);
-        var scaledImage = ii.getImage().getScaledInstance(ii.getIconWidth() ,
-                ii.getIconHeight() ,
-                java.awt.Image.SCALE_SMOOTH
-        );
+        var scaledImage = ii.getImage().getScaledInstance(ii.getIconWidth(),
+                ii.getIconHeight(),
+                java.awt.Image.SCALE_SMOOTH);
         setImage(scaledImage);
     }
 
@@ -31,9 +29,27 @@ public class Shield extends PowerUp {
             player.setShieldActive(false);
             shieldTimer = null;
         });
+
         shieldTimer.setRepeats(false);
         shieldTimer.start();
+        // shieldTimer.restart();
+        // shieldTimer = null;
         this.die();
+    }
+
+    @Override
+    public String toString() {
+        return "Shield{" +
+                "shieldTimer=" + shieldTimer.toString() +
+                ", visible=" + visible +
+                ", image=" + image +
+                ", dying=" + dying +
+                ", visibleFrames=" + visibleFrames +
+                ", x=" + x +
+                ", y=" + y +
+                ", dx=" + dx +
+                ", dy=" + dy +
+                '}';
     }
 
     @Override
@@ -51,11 +67,10 @@ public class Shield extends PowerUp {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
             g2d.setColor(Color.CYAN);
             g2d.fillOval(
-                    player.getX() + player.getWidth()/2 - shieldRadius,
-                    player.getY() + player.getHeight()/2 - shieldRadius,
+                    player.getX() + player.getWidth() / 2 - shieldRadius,
+                    player.getY() + player.getHeight() / 2 -shieldRadius +20,
                     shieldRadius * 2,
-                    shieldRadius * 2
-            );
+                    shieldRadius * 2);
 
             // Restore the original composite
             g2d.setComposite(originalComposite);
@@ -63,6 +78,9 @@ public class Shield extends PowerUp {
     }
 
     public void disposeShieldTimer() {
-        shieldTimer = null;
+        if (shieldTimer != null) {
+            shieldTimer.stop();
+            shieldTimer = null;
+        }
     }
 }
