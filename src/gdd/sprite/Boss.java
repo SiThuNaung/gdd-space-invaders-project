@@ -83,7 +83,7 @@ public class Boss extends Enemy {
 
     // Boss health and explosion system
     private int hitCount = 0;
-    private final int MAX_HITS = 80;
+    private final int MAX_HITS = 150;
     private BossExplosion explosion = null;
     private boolean isExploding = false;
     private boolean isDead = false;

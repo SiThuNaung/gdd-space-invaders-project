@@ -114,12 +114,12 @@ public class AudioPlayer {
             AudioInputStream titleAudioStream = AudioSystem.getAudioInputStream(titleMusicFile);
             titleClip = AudioSystem.getClip();
             titleClip.open(titleAudioStream);
-            setVolume(titleClip, 0.75f);
+            setVolume(titleClip, 0.8f);
  
             AudioInputStream scene2AudioStream = AudioSystem.getAudioInputStream(scene2MusicFile);
             scene2Clip = AudioSystem.getClip();
             scene2Clip.open(scene2AudioStream);
-            setVolume(scene2Clip, 0.75f);
+            setVolume(scene2Clip, 0.9f);
 
             AudioInputStream bossSceneAudioStream = AudioSystem.getAudioInputStream(bossScenFile);
             bossSceneClip = AudioSystem.getClip();
