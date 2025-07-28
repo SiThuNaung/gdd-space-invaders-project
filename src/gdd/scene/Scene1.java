@@ -735,7 +735,7 @@ public class Scene1 extends JPanel {
                 enemy.tickCooldown();
 
                 // Random chance to drop a bomb
-                if (enemy.isVisible() && enemy.canDropBomb() && randomizer.nextInt(120) == 0) {
+                if (enemy.isVisible() && enemy.canDropBomb() && randomizer.nextInt(100) == 0) {
                     enemy.dropBomb();
                 }
 

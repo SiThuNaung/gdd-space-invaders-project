@@ -119,7 +119,7 @@ public class AudioPlayer {
             AudioInputStream scene2AudioStream = AudioSystem.getAudioInputStream(scene2MusicFile);
             scene2Clip = AudioSystem.getClip();
             scene2Clip.open(scene2AudioStream);
-            setVolume(scene2Clip, 0.9f);
+            setVolume(scene2Clip, 0.8f);
 
             AudioInputStream bossSceneAudioStream = AudioSystem.getAudioInputStream(bossScenFile);
             bossSceneClip = AudioSystem.getClip();
@@ -179,7 +179,7 @@ public class AudioPlayer {
                 AudioInputStream laserStream = AudioSystem.getAudioInputStream(new File(LASER_SOUND));
                 Clip laserClip = AudioSystem.getClip();
                 laserClip.open(laserStream);
-                setVolume(laserClip, 0.8f);
+                setVolume(laserClip, 0.7f);
                 laserClips.add(laserClip);
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
                 throw new RuntimeException(e);
