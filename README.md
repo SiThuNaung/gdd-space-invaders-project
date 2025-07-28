@@ -32,6 +32,21 @@ YouTube: [Space Invaders Java Game](https://www.youtube.com/watch?v=example) (re
 ## 📷 Screenshots
 
 <img width="786" height="743" alt="Screenshot 2568-07-28 at 22 04 08" src="https://github.com/user-attachments/assets/1a574c82-fcbc-4a20-9f09-969dcb7b8b06" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 05 40" src="https://github.com/user-attachments/assets/4c6ac892-59ef-4202-98ca-f278b7050859" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 21 59 05" src="https://github.com/user-attachments/assets/abd1c4bb-019d-4d1d-81b5-82b94232c17e" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 07 43" src="https://github.com/user-attachments/assets/f6fa18fd-3786-444a-8852-1dc4cf3696b6" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 21 59 26" src="https://github.com/user-attachments/assets/fa053ec7-f350-4989-a2cf-71cb78792694" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 06 19" src="https://github.com/user-attachments/assets/e2daed10-8529-4a22-9a29-587b6252daff" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 00 19" src="https://github.com/user-attachmen
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 01 12" src="https://github.com/user-attachments/assets/612db1db-27e1-47ff-9d4f-4895ff842afd" />
+ts/assets/586fc5df-df39-4123-9e8b-a9c5cd78d1aa" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 01 19" src="https://github.com/user-attachments/assets/ab62a6f9-a689-41da-a61c-577bca6038b9" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 01 22" src="https://github.com/user-attachments/assets/b4643879-5d2e-405b-ac9f-6f99cc3650d5" />
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 02 06" src="https://github.com/user-attach
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 02 30" src="https://github.com/user-attachments/assets/645218d2-79bb-4d43-81c5-9ec46cefff0a" />
+ments/assets/3733c03a-0c7b-4857-9cdb-f5955d5de65a" />
+
+
 
 
 ## 🕹️ Game Features
