@@ -30,7 +30,9 @@ A vertical scrolling shooter game developed as a university project. This game f
 YouTube: [Space Invaders Java Game](https://www.youtube.com/watch?v=example) (replace with actual link)
 
 ## 📷 Screenshots
-add screenshots here or link to a gallery
+
+<img width="786" height="743" alt="Screenshot 2568-07-28 at 22 04 08" src="https://github.com/user-attachments/assets/1a574c82-fcbc-4a20-9f09-969dcb7b8b06" />
+
 
 ## 🕹️ Game Features
 
