@@ -56,6 +56,10 @@ ts/assets/586fc5df-df39-4123-9e8b-a9c5cd78d1aa" />
 - 🕒 Approx. **10 minutes of gameplay**
 - 🧠 **Enemy spawn logic loaded from CSV file**
 - 👾 **Three enemy types** + animated **boss**
+- 1 -> Alien UFO Boombs to Player
+- 2 -> Flying Alien Flys and Attacks to Player
+- 3 -> Boss Enemy Spawn Her Babies to Player
+- 4 -> Baby Boss Try and Catch the Player
 - 🎞️ **Smooth stage transitions** with animated effects
 - 🖼️ **Procedurally generated backgrounds**
 - 💾 **High score saving system** using JSON file storage
