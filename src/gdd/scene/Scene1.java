@@ -6,10 +6,11 @@ import static gdd.Global.*;
 
 import gdd.powerup.*;
 import gdd.sprite.AlienUFO;
-import gdd.sprite.Enemy;
-import gdd.sprite.Explosion;
-import gdd.sprite.Player;
-import gdd.sprite.Shot;
+import gdd.ProceduralStarField;
+import gdd.SpawnDetails;
+import gdd.powerup.PowerUp;
+import gdd.powerup.SpeedUp;
+import gdd.sprite.Alien1;
 import java.awt.*;
 import gdd.SpawnDetails;
 import gdd.powerup.PowerUp;
@@ -21,6 +22,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -112,6 +115,8 @@ public class Scene1 extends JPanel {
     private boolean stage2MessageShown = false;
     private boolean stage3MessageShown = false;
 
+    private ProceduralStarField starField;
+
     private HashMap<Integer, SpawnDetails> spawnMap = new HashMap<>();
     private AudioPlayer audioPlayer;
 
@@ -119,7 +124,7 @@ public class Scene1 extends JPanel {
 
     public Scene1(Game game) {
         this.game = game;
-        // initBoard();
+         initBoard();
         // gameInit();
         loadSpawnDetails();
     }
@@ -211,8 +216,9 @@ public class Scene1 extends JPanel {
     }
 
     private void initBoard() {
-
+        starField = new ProceduralStarField(BOARD_WIDTH, BOARD_HEIGHT, System.currentTimeMillis());
     }
+
 
     public void start() {
         addKeyListener(new TAdapter());
@@ -255,44 +261,6 @@ public class Scene1 extends JPanel {
         // }
         player = new Player();
         // shot = new Shot();
-    }
-
-    private void drawMap(Graphics g) {
-        // Draw scrolling starfield background
-
-        // Calculate smooth scrolling offset (1 pixel per frame)
-        int scrollOffset = (frame) % BLOCKHEIGHT;
-
-        // Calculate which rows to draw based on screen position
-        int baseRow = (frame) / BLOCKHEIGHT;
-        int rowsNeeded = (BOARD_HEIGHT / BLOCKHEIGHT) + 2; // +2 for smooth scrolling
-
-        // Loop through rows that should be visible on screen
-        for (int screenRow = 0; screenRow < rowsNeeded; screenRow++) {
-            // Calculate which MAP row to use (with wrapping)
-            int mapRow = (baseRow + screenRow) % MAP.length;
-
-            // Calculate Y position for this row
-            // int y = (screenRow * BLOCKHEIGHT) - scrollOffset;
-            int y = BOARD_HEIGHT - ((screenRow * BLOCKHEIGHT) - scrollOffset);
-
-            // Skip if row is completely off-screen
-            if (y > BOARD_HEIGHT || y < -BLOCKHEIGHT) {
-                continue;
-            }
-
-            // Draw each column in this row
-            for (int col = 0; col < MAP[mapRow].length; col++) {
-                if (MAP[mapRow][col] == 1) {
-                    // Calculate X position
-                    int x = col * BLOCKWIDTH;
-
-                    // Draw a cluster of stars
-                    drawStarCluster(g, x, y, BLOCKWIDTH, BLOCKHEIGHT);
-                }
-            }
-        }
-
     }
 
     private void drawGameInfo(Graphics g) {
@@ -467,6 +435,21 @@ public class Scene1 extends JPanel {
         }
     }
 
+    private void drawStars(Graphics2D g2d) {
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+        // Use async update for better performance
+        starField.updateAsync(1.5f, frame);
+        starField.draw(g2d);
+
+        // Add effects less frequently
+        if (frame % 3 == 0) { // Every 3rd frame
+            starField.addRandomEffects(g2d, frame);
+        }
+    }
+
+
+
     private void drawExplosions(Graphics g) {
 
         // List<Explosion> toRemove = new ArrayList<>();
@@ -508,7 +491,7 @@ public class Scene1 extends JPanel {
         if (inGame) {
 
             if (!isFading) {
-                drawMap(g); // Draw background stars first
+                drawStars(g2d);
             }
             drawAliens(g);
             drawPowreUps(g);
