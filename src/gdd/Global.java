@@ -38,7 +38,7 @@ public class Global {
     public static final String IMG_SHOT = "src/images/space_ship_shot.png";
     public static final String IMG_EXPLOSION = "src/images/explosion.png";
     public static final String IMG_SPACESHIP_EXPLOSION = "src/images/space_ship_explosion.png";
-    public static final String IMG_TITLE = "src/images/title.png";
+    public static final String IMG_TITLE = "src/images/new_title.png";
     public static final String IMG_ALIEN_UFO = "src/images/alien_ufo.png";
     public static final String  IMG_POWERUP_SPEEDUP = "src/images/powerup-s.png";
     public static final String IMG_POWERUP_HEART = "src/images/life_powerup.png";
