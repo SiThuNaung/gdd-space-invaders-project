@@ -5,23 +5,10 @@ import gdd.*;
 import static gdd.Global.*;
 
 import gdd.powerup.*;
-import gdd.sprite.AlienUFO;
-import gdd.ProceduralStarField;
-import gdd.SpawnDetails;
-import gdd.powerup.PowerUp;
-import gdd.powerup.SpeedUp;
-import gdd.sprite.Alien1;
-import java.awt.*;
-import gdd.SpawnDetails;
-import gdd.powerup.PowerUp;
-import gdd.powerup.SpeedUp;
-import gdd.sprite.*;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Toolkit;
+import java.awt.*;
+
+import gdd.sprite.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,17 +17,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.Timer;
 
 public class Scene1 extends JPanel {
-    //resetting music
-    private boolean win= false;
-    private boolean lose= false;
-
+    // resetting music
+    private boolean win = false;
+    private boolean lose = false;
 
     private int frame = 0;
     private List<PowerUp> powerups;
@@ -124,7 +108,7 @@ public class Scene1 extends JPanel {
 
     public Scene1(Game game) {
         this.game = game;
-         initBoard();
+        initBoard();
         // gameInit();
         loadSpawnDetails();
     }
@@ -148,7 +132,7 @@ public class Scene1 extends JPanel {
         }
         // spawnMap.put(100, new SpawnDetails(SpawnType.LIFE, 200, 100, 1, 0));
         // spawnMap.put(100, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
-        //spawnMap.put(100, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
+        // spawnMap.put(100, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
         // spawnMap.put(2000, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
         // spawnMap.put(3000, new SpawnDetails(SpawnType.SHIELD, 200, 100, 1, 0));
         // spawnMap.put(100, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
@@ -161,7 +145,7 @@ public class Scene1 extends JPanel {
         // spawnMap.put(1200, new SpawnDetails(SpawnType.AMMO_UPGRADE, 200, 100, 1, 0));
         // spawnMap.put(1400, new SpawnDetails(SpawnType.SPEED_BOOST, 200, 100, 1, 0));
         // spawnMap.put(1600, new SpawnDetails(SpawnType.FLYING_ALIEN, 200, 100, 1, 0));
-        //spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 270, 0, 1, 0));
+        // spawnMap.put(200, new SpawnDetails(SpawnType.BOSS, 270, 0, 1, 0));
     }
 
     // function to spawn anything from spawn map
@@ -218,7 +202,6 @@ public class Scene1 extends JPanel {
     private void initBoard() {
         starField = new ProceduralStarField(BOARD_WIDTH, BOARD_HEIGHT, System.currentTimeMillis());
     }
-
 
     public void start() {
         addKeyListener(new TAdapter());
@@ -448,8 +431,6 @@ public class Scene1 extends JPanel {
         }
     }
 
-
-
     private void drawExplosions(Graphics g) {
 
         // List<Explosion> toRemove = new ArrayList<>();
@@ -512,7 +493,7 @@ public class Scene1 extends JPanel {
 
             saveScore(score);
 
-            if (boss != null&&boss.isDead()) {
+            if (boss != null && boss.isDead()) {
                 drawVictory(g);
             } else {
                 drawGameOver(g);
@@ -551,25 +532,25 @@ public class Scene1 extends JPanel {
         audioPlayer.playLaser();
         if (player.getBulletStage() == 1) {
             // Single shot - straight up
-            shots.add(new Shot(player.getX() , player.getY(), 0, -3));
+            shots.add(new Shot(player.getX(), player.getY(), 0, -3));
 
         } else if (player.getBulletStage() == 2) {
             // Double shot - slight spread
             shots.add(new Shot(player.getX() - 10, player.getY(), -1, -3));
-            shots.add(new Shot(player.getX()  + 10, player.getY(), 1, -3));
+            shots.add(new Shot(player.getX() + 10, player.getY(), 1, -3));
 
         } else if (player.getBulletStage() == 3) {
             // Triple shot - center straight, sides angled
-            shots.add(new Shot(player.getX()  - 20, player.getY(), -2, -3));
-            shots.add(new Shot(player.getX() , player.getY(), 0, -3));
-            shots.add(new Shot(player.getX()  + 20, player.getY(), 2, -3));
+            shots.add(new Shot(player.getX() - 20, player.getY(), -2, -3));
+            shots.add(new Shot(player.getX(), player.getY(), 0, -3));
+            shots.add(new Shot(player.getX() + 20, player.getY(), 2, -3));
 
         } else if (player.getBulletStage() == 4) {
             // Quad shot - outer ones scatter more, inner ones slight scatter
             shots.add(new Shot(player.getX() - 30, player.getY(), -3, -3)); // Far left
-            shots.add(new Shot(player.getX()  - 10, player.getY(), -1, -3)); // Inner left
-            shots.add(new Shot(player.getX()  + 10, player.getY(), 1, -3)); // Inner right
-            shots.add(new Shot(player.getX()  + 30, player.getY(), 3, -3)); // Far right
+            shots.add(new Shot(player.getX() - 10, player.getY(), -1, -3)); // Inner left
+            shots.add(new Shot(player.getX() + 10, player.getY(), 1, -3)); // Inner right
+            shots.add(new Shot(player.getX() + 30, player.getY(), 3, -3)); // Far right
         }
     }
 
@@ -659,35 +640,34 @@ public class Scene1 extends JPanel {
                             && shotX <= (enemyX + enemyWidth)
                             && shotY >= (enemyY)
                             && shotY <= (enemyY + enemyHeight)) {
-                        if(boss!=null&&!(boss.isExploding())){
+                        if (boss != null && !(boss.isExploding())) {
                             score += 5;
                         }
-                        if (boss==null){
+                        if (boss == null) {
                             score += 5;
 
                         }
-                        //score += 5;
-                        if((enemy instanceof FlyingAlien)){
+                        // score += 5;
+                        if ((enemy instanceof FlyingAlien)) {
                             audioPlayer.playFlyingAlienExplosion();
                         }
-                        if((enemy instanceof AlienUFO)){
+                        if ((enemy instanceof AlienUFO)) {
                             audioPlayer.playExplosion();
                         }
                         // if((enemy instanceof BabyBoss)){
-                        //     audioPlayer.playBabyBossExplosion();
+                        // audioPlayer.playBabyBossExplosion();
                         // }
-                        //audioPlayer.playExplosion();
+                        // audioPlayer.playExplosion();
                         if (!(enemy instanceof Boss)) {
                             explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getType()));
                         }
-                        if(boss!=null && !(boss.isExploding())) {
-                            if(enemy instanceof Boss){
+                        if (boss != null && !(boss.isExploding())) {
+                            if (enemy instanceof Boss) {
                                 boss.takeDamage();
                             }
-                            
-                            
+
                         }
-                        
+
                         deaths++;
                         enemy.setDying(true);
                         shot.die();
@@ -711,7 +691,7 @@ public class Scene1 extends JPanel {
         }
 
         // System.out.println("Shots to remove: " + shotsToRemove);
-        //shots.removeAll(shotsToRemove);
+        // shots.removeAll(shotsToRemove);
         // enemies
         // for (Enemy enemy : enemies) {
         // int x = enemy.getX();
@@ -857,8 +837,8 @@ public class Scene1 extends JPanel {
 
                     // Check bullet-boss collisions
                     // if (shot.getBounds().intersects(boss.getBounds()) && !boss.isDead()) {
-                    //     boss.takeDamage();
-                    //     shot.setVisible(false); // Remove the bullet
+                    // boss.takeDamage();
+                    // shot.setVisible(false); // Remove the bullet
                     // }
 
                     // Check bullet-baby boss collisions
@@ -881,7 +861,7 @@ public class Scene1 extends JPanel {
             }
         }
         shots.removeAll(shotsToRemove);
-       //System.out.println(player.isShieldActive());
+        // System.out.println(player.isShieldActive());
     }
 
     private void handleCollision(int playerX, int playerY) {
@@ -891,11 +871,12 @@ public class Scene1 extends JPanel {
             if (player.getLives() != 0) {
                 audioPlayer.playPlayerHitSound();
             } else {
-                audioPlayer.playSpaceshipExplosion();;
+                audioPlayer.playSpaceshipExplosion();
+                ;
                 // Audio here for player death
             }
         } else {
-            //player.setShieldActive(false);
+            // player.setShieldActive(false);
             currentShield.disposeShieldTimer();
             player.setShieldActive(false);
             audioPlayer.playShieldGuardSound();
@@ -904,7 +885,7 @@ public class Scene1 extends JPanel {
         // cool down period for player
         new Timer(1000, e -> {
             if (player.isShieldActive()) {
-                //player.setShieldActive(false);
+                // player.setShieldActive(false);
             }
             player.setOnCoolDown(false);
         }).start();
@@ -927,11 +908,11 @@ public class Scene1 extends JPanel {
     }
 
     private void drawVictory(Graphics g) {
-        // Draw victory screen (same format as game over) 
+        // Draw victory screen (same format as game over)
         audioPlayer.stopScene2Music();
         audioPlayer.stopBossSceneMusic();
         audioPlayer.playWinning();
-        win=true;
+        win = true;
         g.setColor(Color.GREEN);
         g.setFont(new Font("Arial", Font.BOLD, 48));
         String victoryText = "YOU WIN!";
@@ -954,7 +935,7 @@ public class Scene1 extends JPanel {
         audioPlayer.stopScene2Music();
         audioPlayer.stopBossSceneMusic();
         audioPlayer.playGameOver();
-        lose=true;
+        lose = true;
         g.setColor(Color.RED);
         g.setFont(new Font("Arial", Font.BOLD, 48));
         String gameOverText = "GAME OVER";
@@ -975,7 +956,7 @@ public class Scene1 extends JPanel {
     }
 
     private void resetGame() {
-        
+
         initAudio();
         frame = 0;
         babyBossExplosionsTriggered = false;
@@ -1036,6 +1017,8 @@ public class Scene1 extends JPanel {
             playerExplosion.setAnimationCounter(0);
             playerExplosion = null;
         }
+        // Reset the star field with a new random seed
+        starField = new ProceduralStarField(BOARD_WIDTH, BOARD_HEIGHT, System.currentTimeMillis());
 
         // Restart the game timer if it was stopped
         if (timer != null && !timer.isRunning()) {
@@ -1301,9 +1284,9 @@ public class Scene1 extends JPanel {
         }
         // String json = "{ \"highScore\": " + score + " }";
         // try (FileWriter file = new FileWriter("score.json")) {
-        //     file.write(json);
+        // file.write(json);
         // } catch (IOException e) {
-        //     e.printStackTrace();
+        // e.printStackTrace();
         // }
 
     }
@@ -1364,13 +1347,13 @@ public class Scene1 extends JPanel {
             }
 
             if (e.getKeyCode() == KeyEvent.VK_R && (!inGame)) {
-                if (win=true){
+                if (win = true) {
                     audioPlayer.stopWinning();
-                    win=false;
+                    win = false;
                 }
-                if (lose=true){
+                if (lose = true) {
                     audioPlayer.stopGameOver();
-                    lose=false;
+                    lose = false;
                 }
                 restartGame();
             }
